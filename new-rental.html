@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocaFlotte - Nouvelle Location</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="img/LOCAFLOTTE.png" alt="LocaFlotte Logo" class="nav-logo">
+                <span class="brand-name">LocaFlotte</span>
+            </div>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="new-rental.html" class="nav-link active">Nouvelle Location</a>
+                <a href="fleet.html" class="nav-link">Flotte</a>
+                <a href="add-car.html" class="nav-link">Ajouter Voiture</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container main-content">
+        <div class="form-container">
+            <h2 class="page-title">Nouvelle Location</h2>
+            
+            <!-- AI Agent Section -->
+            <div class="ai-agent-section">
+                <div class="ai-agent-header">
+                    <svg class="ai-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                    <div>
+                        <h3 class="ai-title">Extraction Automatique par IA</h3>
+                        <p class="ai-description">Téléchargez les documents (contrat, CIN, etc.) et notre agent IA extraira automatiquement toutes les informations</p>
+                    </div>
+                </div>
+                <div class="upload-area ai-upload-area">
+                    <input type="file" accept=".pdf,image/*" multiple class="file-input" id="ai-documents-upload">
+                    <label for="ai-documents-upload" class="upload-label">
+                        <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                        <p class="upload-text"><strong>Télécharger tous les documents</strong></p>
+                        <p class="upload-subtext">PDF, images (CIN, contrat, permis, etc.)</p>
+                    </label>
+                </div>
+                <div id="ai-processing" class="ai-processing" style="display: none;">
+                    <div class="ai-loader"></div>
+                    <p class="ai-processing-text">Agent IA en train d'extraire les informations...</p>
+                </div>
+                <div id="ai-files-preview" class="ai-files-preview"></div>
+            </div>
+
+            <div class="divider">
+                <span class="divider-text">OU</span>
+            </div>
+
+            <form id="rental-form" class="rental-form">
+                <!-- Customer Information -->
+                <div class="form-group">
+                    <label class="form-label">Nom Complet du Client</label>
+                    <input type="text" required class="form-input" placeholder="Ex: Mohammed El Amrani">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Numéro CIN</label>
+                    <input type="text" required class="form-input" placeholder="Ex: AB123456">
+                </div>
+
+                <!-- CIN Scan Upload -->
+                <div class="form-group">
+                    <label class="form-label">Scan CIN (Optionnel)</label>
+                    <div class="upload-area">
+                        <input type="file" accept="image/*,.pdf" class="file-input" id="cin-upload">
+                        <label for="cin-upload" class="upload-label">
+                            <svg class="upload-icon" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <p class="upload-text">Cliquez pour scanner ou télécharger le CIN</p>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Contract Upload -->
+                <div class="form-group">
+                    <label class="form-label">Contrat de Location</label>
+                    <div class="upload-area">
+                        <input type="file" accept=".pdf,image/*" class="file-input" id="contract-upload" required>
+                        <label for="contract-upload" class="upload-label">
+                            <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <p class="upload-text">Télécharger le contrat (PDF ou scan)</p>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Car Selection -->
+                <div class="form-group">
+                    <label class="form-label">Sélectionner une Voiture</label>
+                    <select required class="form-select" id="car-select">
+                        <option value="">Choisir une voiture disponible...</option>
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+
+                <!-- Dates -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date Début</label>
+                        <input type="date" required class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date Fin</label>
+                        <input type="date" required class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        Enregistrer la Location
+                    </button>
+                    <a href="dashboard.html" class="btn btn-secondary">
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

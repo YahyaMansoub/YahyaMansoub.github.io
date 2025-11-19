@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocaFlotte - Ajouter Voiture</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="img/LOCAFLOTTE.png" alt="LocaFlotte Logo" class="nav-logo">
+                <span class="brand-name">LocaFlotte</span>
+            </div>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="new-rental.html" class="nav-link">Nouvelle Location</a>
+                <a href="fleet.html" class="nav-link">Flotte</a>
+                <a href="add-car.html" class="nav-link active">Ajouter Voiture</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container main-content">
+        <div class="form-container">
+            <h2 class="page-title">Ajouter une Nouvelle Voiture</h2>
+            
+            <form id="add-car-form" class="rental-form">
+                <!-- Car Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Informations du Véhicule</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Modèle de Voiture</label>
+                            <input type="text" class="form-input" placeholder="Ex: Hyundai Tucson" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Plaque d'Immatriculation</label>
+                            <input type="text" class="form-input" placeholder="Ex: A-12345" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Statut Initial</label>
+                            <select class="form-input" required>
+                                <option value="">Sélectionner le statut</option>
+                                <option value="available">Disponible</option>
+                                <option value="rented">Louée</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date de Dernier Maintenance</label>
+                            <input type="date" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Localisation</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Latitude</label>
+                            <input type="number" step="0.0001" class="form-input" placeholder="Ex: 33.5731" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Longitude</label>
+                            <input type="number" step="0.0001" class="form-input" placeholder="Ex: -7.5898" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Informations Financières</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Revenus Initiaux (DH)</label>
+                            <input type="number" class="form-input" placeholder="0" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Dépenses Initiales (DH)</label>
+                            <input type="number" class="form-input" placeholder="0" value="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car Image Upload -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Photo de la Voiture</h3>
+                    <div class="upload-area">
+                        <input type="file" accept="image/*" class="file-input" id="car-image-upload">
+                        <label for="car-image-upload" class="upload-label">
+                            <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <p class="upload-text"><strong>Télécharger une photo</strong></p>
+                            <p class="upload-subtext">JPG, PNG, WEBP ou AVIF</p>
+                        </label>
+                    </div>
+                    <div id="image-preview" class="image-preview"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">Ajouter la Voiture</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
