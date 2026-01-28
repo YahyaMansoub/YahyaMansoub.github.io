@@ -1,14 +1,1616 @@
-<!DOCTYPE html>
+<!-- index.html (FULL) -->
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LocaFlotte</title>
-    <script>
-        window.location.href = 'dashboard.html';
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yahya Mansoub — Pixel Portfolio</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <script>
+    // Show loader immediately if returning from skills - block rendering
+    if (window.location.search.includes('from=skills')) {
+      document.write('<style id="forceLoader">#transition{opacity:1!important;pointer-events:auto!important;}</style>');
+    }
+    // Hide page content but show loader immediately if loading professional experience
+    if (sessionStorage.getItem('loadProExp') === 'true') {
+      document.write('<style>body>*:not(#transition){visibility:hidden!important;}#transition{display:grid!important;opacity:1!important;pointer-events:auto!important;place-items:center!important;}</style>');
+    }
+  </script>
+
+  <style>
+    :root{
+      --bg1-size: clamp(980px, 110vw, 1600px) auto;
+      --bg3-size: clamp(980px, 110vw, 1600px) auto;
+      --bg5-size: clamp(980px, 110vw, 1600px) auto;
+      --bg7-size: clamp(980px, 110vw, 1600px) auto;
+      --bg4-size: clamp(980px, 110vw, 1600px) auto;
+      --bg6-size: clamp(980px, 110vw, 1600px) auto;
+      --final-size: clamp(980px, 110vw, 1600px) auto;
+      --bg-pos: center center;
+
+      --green: #35ff7a;
+      --text: #d9ffe7;
+    }
+
+    html, body { height: 100%; scroll-behavior: smooth; }
+    body {
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #06110b;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+    .pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+    /* backgrounds */
+    .bg-layer {
+      position: fixed; inset: 0;
+      background-repeat: no-repeat;
+      background-position: var(--bg-pos);
+      z-index: -4;
+      transform: translateZ(0);
+    }
+    .bg1 { background-image: url("assets/bg1.gif"); background-size: var(--bg1-size); opacity: 1; }
+    .bg3 { background-image: url("assets/bg3.gif"); background-size: var(--bg3-size); opacity: 0; }
+    .bg5 { background-image: url("assets/bg5.gif"); background-size: var(--bg5-size); opacity: 0; }
+    .bg7 { background-image: url("assets/bg7.gif"); background-size: var(--bg7-size); opacity: 0; }
+    .bg4 { background-image: url("assets/bg4.gif"); background-size: var(--bg4-size); opacity: 0; }
+    .bg6 { background-image: url("assets/bg6.gif"); background-size: var(--bg6-size); opacity: 0; }
+    .final { background-image: url("assets/final.gif"); background-size: var(--final-size); opacity: 0; }
+
+    .tint {
+      position: fixed; inset: 0; z-index: -3;
+      background:
+        radial-gradient(1200px 700px at 70% 20%, rgba(53,255,122,0.14), transparent 60%),
+        radial-gradient(900px 600px at 20% 80%, rgba(22,163,74,0.10), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.62));
+    }
+
+    .scanlines {
+      position: fixed; inset: 0; z-index: -2;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      mix-blend-mode: multiply;
+      opacity: 0.40;
+      pointer-events: none;
+    }
+
+    /* sections */
+    .screen {
+      min-height: 100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 36px 16px;
+      position: relative;
+    }
+    .screen-inner { width: min(1100px, 100%); }
+
+    /* big title */
+    .big-title {
+      font-size: clamp(26px, 5vw, 56px);
+      line-height: 1.2;
+      text-shadow: 0 10px 40px rgba(0,0,0,0.7), 0 0 18px rgba(53,255,122,0.20);
+      letter-spacing: 1px;
+    }
+    .sub {
+      margin-top: 18px;
+      font-size: clamp(11px, 1.6vw, 14px);
+      opacity: 0.92;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.65);
+      line-height: 1.8;
+    }
+
+    /* page1 arrow */
+    .down-arrow {
+      margin-top: 24px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+      cursor: pointer;
+    }
+    .down-arrow .arrow {
+      font-size: 22px;
+      color: var(--text);
+      text-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 12px rgba(53,255,122,0.18);
+      animation: bob 1.2s ease-in-out infinite;
+    }
+    @keyframes bob { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(7px);} }
+
+    /* Left Sidebar Navigation */
+    .nav-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.85);
+      border: 2px solid rgba(53,255,122,0.3);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      user-select: none;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .nav-toggle.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(0,0,0,0.95);
+      border-color: rgba(53,255,122,0.6);
+      transform: scale(1.05);
+    }
+
+    .nav-toggle-line {
+      width: 28px;
+      height: 3px;
+      background: var(--green);
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .sidebar-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      background: rgba(6,17,11,0.98);
+      border-right: 2px solid rgba(53,255,122,0.2);
+      padding: 90px 20px 20px;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(.18,.9,.2,1);
+      backdrop-filter: blur(16px);
+      overflow-y: auto;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+
+    .sidebar-nav.show {
+      transform: translateX(0);
+    }
+
+    .sidebar-nav-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(0,0,0,0.45);
+      border: 2px solid rgba(53,255,122,0.15);
+      border-radius: 10px;
+      font-size: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(53,255,122,0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .nav-link:hover {
+      background: rgba(53,255,122,0.08);
+      border-color: rgba(53,255,122,0.4);
+      transform: translateX(8px);
+      box-shadow: 0 4px 12px rgba(53,255,122,0.2);
+    }
+
+    .nav-link img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0.95);
+    }
+
+    /* Sidebar overlay for mobile */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @keyframes bob { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(7px);} }
+
+    /* ---------- PAGE2 (bg3) ---------- */
+    #below { overflow: hidden; }
+    #below .screen-inner{
+      width: 100%;
+      max-width: none;
+      padding-left: clamp(16px, 4vw, 64px);
+      padding-right: clamp(16px, 4vw, 64px);
+      z-index: 1;
+    }
+
+    .soft-text { text-shadow: 0 14px 40px rgba(0,0,0,0.75); }
+
+    /* entrance anims (HIDDEN until #below is reached) */
+    .enter-right, .enter-up {
+      opacity: 0;
+      visibility: hidden;
+      will-change: transform, opacity, filter;
+    }
+    .enter-right { transform: translateX(260px); filter: blur(2px); }
+    .enter-up    { transform: translateY(160px); filter: blur(2px); }
+
+    .enter-right.on { visibility: visible; animation: enterRight 760ms cubic-bezier(.18,.9,.2,1) forwards; }
+    .enter-up.on    { visibility: visible; animation: enterUp   760ms cubic-bezier(.18,.9,.2,1) forwards; }
+
+    @keyframes enterRight{
+      0%   { opacity: 0; transform: translateX(260px); filter: blur(2px); }
+      70%  { opacity: 1; transform: translateX(-10px); filter: blur(0px); }
+      100% { opacity: 1; transform: translateX(0px); filter: blur(0px); }
+    }
+    @keyframes enterUp{
+      0%   { opacity: 0; transform: translateY(160px); filter: blur(2px); }
+      70%  { opacity: 1; transform: translateY(-10px); filter: blur(0px); }
+      100% { opacity: 1; transform: translateY(0px); filter: blur(0px); }
+    }
+
+    /* CUTOUT pinned RIGHT-BOTTOM (independent) */
+    .cutout-layer{
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      padding-right: clamp(6px, 2vw, 24px);
+      padding-bottom: clamp(0px, 1vh, 12px);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .cutout-wrap{
+      width: clamp(320px, 30vw, 560px);
+      filter: drop-shadow(0 18px 60px rgba(0,0,0,0.75));
+    }
+    .cutout-img{
+      width: 100%;
+      height: auto;
+      max-height: 82vh;
+      display: block;
+      filter: hue-rotate(110deg) saturate(0.80) brightness(0.85) contrast(1.15);
+      opacity: 0.95;
+    }
+
+    /* BUTTON pinned CENTER-BOTTOM (independent) */
+    .btn-layer{
+      position: absolute;
+      left: 50%;
+      bottom: clamp(28px, 4vh, 54px);
+      transform: translateX(-50%);
+      z-index: 5;
+    }
+
+    /* VERY BIG centered button */
+    .pixel-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 26px 38px;
+      min-width: min(620px, calc(100vw - 48px));
+      border-radius: 18px;
+      border: 3px solid rgba(53,255,122,0.70);
+      background: rgba(0,0,0,0.30);
+      box-shadow: 0 9px 0 rgba(0,0,0,0.38), 0 26px 80px rgba(0,0,0,0.48);
+      transition: transform 120ms linear, box-shadow 120ms linear, background 120ms linear, border-color 120ms linear;
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.65);
+    }
+    .pixel-btn:hover {
+      transform: translateY(2px);
+      box-shadow: 0 7px 0 rgba(0,0,0,0.32), 0 22px 70px rgba(0,0,0,0.45);
+      background: rgba(53,255,122,0.12);
+      border-color: rgba(53,255,122,0.92);
+    }
+    .pixel-btn:active {
+      transform: translateY(7px);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.26), 0 18px 60px rgba(0,0,0,0.42);
+    }
+
+    /* ICON sizes (change these) */
+    .btn-icon {
+      width: 100px;
+      height: 100px;
+      filter: drop-shadow(0 2px 0 rgba(0,0,0,0.35));
+    }
+    .btn-icon-nav{
+      width: 72px;
+      height: 72px;
+      filter: drop-shadow(0 2px 0 rgba(0,0,0,0.35));
+    }
+
+    .footer-left{
+      position: absolute;
+      left: clamp(16px, 4vw, 64px);
+      bottom: 10px;
+      font-size: 10px;
+      opacity: 0.70;
+      z-index: 4;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+      pointer-events: none;
+    }
+
+    /* fullscreen transition */
+    .transition {
+      position: fixed; inset: 0;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 999;
+      display: grid;
+      place-items: center;
+    }
+    .transition.on {
+      pointer-events: auto;
+      animation: fadeIn 220ms linear forwards;
+    }
+    .transition.instant {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+    .loader {
+      width: min(560px, calc(100vw - 48px));
+      border: 2px solid rgba(53,255,122,0.55);
+      background: rgba(0,0,0,0.35);
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 18px 70px rgba(0,0,0,0.75);
+      position: relative;
+    }
+    .loader-title { font-size: 11px; opacity: 0.9; margin-bottom: 10px; }
+    .bar {
+      height: 16px;
+      border: 2px solid rgba(53,255,122,0.55);
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.45);
+      position: relative;
+    }
+    .bar-fill { height: 100%; width: 0%; background: rgba(53,255,122,0.75); box-shadow: 0 0 18px rgba(53,255,122,0.25); }
+    .runner {
+      position: absolute;
+      left: 50%;
+      top: -20px;
+      width: 180px;
+      height: 180px;
+      transform: translate(-50%, -100%);
+      pointer-events: none;
+      opacity: 0.95;
+    }
+    .runner img{ width: 100%; height: 100%; }
+    .loader-hint { margin-top: 10px; font-size: 10px; opacity: 0.7; }
+
+    /* ---------- PAGE3 (bg5) WHAT I MADE ---------- */
+    #whatmade { overflow: hidden; }
+    #whatmade .screen-inner{
+      width: min(1150px, 100%);
+      z-index: 1;
+    }
+
+    .made-wrap{
+      padding: clamp(18px, 2.2vw, 28px);
+    }
+
+    .made-title{
+      font-size: 18px;
+      letter-spacing: 1px;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+      opacity: 0;
+      transform: translateY(22px);
+      filter: blur(2px);
+    }
+    .made-title.on{
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+      transition: 560ms cubic-bezier(.18,.9,.2,1);
+    }
+
+    .made-grid{
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+    }
+
+    .made-card{
+      position: relative;
+      opacity: 0;
+      filter: blur(2px);
+      will-change: transform, opacity, filter;
+      display: flex;
+      flex-direction: column;
+      min-height: 300px;
+    }
+    .made-card.left { 
+      transform: translateY(46px); 
+      align-items: flex-start;
+      text-align: left;
+    }
+    .made-card.right { 
+      transform: translateY(46px); 
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .made-card.on{
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+      transition: 720ms cubic-bezier(.18,.9,.2,1);
+    }
+
+    .made-logo{
+      height: 140px;
+      width: auto;
+      margin-bottom: 24px;
+      image-rendering: auto;
+      opacity: 0.95;
+      animation: float 3s ease-in-out infinite;
+      transition: transform 0.3s ease;
+    }
+    .made-logo:hover {
+      transform: scale(1.05);
+    }
+    .made-logo.gep{
+      filter: brightness(0.98) contrast(1.10) saturate(1.12) drop-shadow(0 0 20px rgba(53,255,122,0.35));
+    }
+    .made-logo.um6p{
+      filter: brightness(0.98) contrast(1.10) saturate(1.10) drop-shadow(0 0 20px rgba(255,140,90,0.32));
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .made-name{
+      margin-top: 12px;
+      font-size: 16px;
+      line-height: 1.55;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+      max-width: 600px;
+    }
+    .made-desc{
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.95;
+      opacity: 0.9;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+      max-width: 600px;
+    }
+
+    .made-chips{
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .made-demo-trigger {
+      margin-top: 16px;
+      padding: 12px 18px;
+      font-size: 11px;
+      border: 2px solid rgba(53,255,122,0.45);
+      background: rgba(0,0,0,0.25);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.65);
+    }
+    .made-demo-trigger:hover {
+      background: rgba(53,255,122,0.15);
+      border-color: rgba(53,255,122,0.75);
+      transform: translateY(-2px);
+    }
+    
+    .demo-preview {
+      margin-top: 20px;
+      max-width: 95%;
+      width: 1200px;
+      border: 2px solid rgba(53,255,122,0.25);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.35);
+      padding: 12px;
+      opacity: 0;
+      max-height: 0;
+      transition: all 0.5s ease;
+    }
+    .demo-preview.show {
+      opacity: 1;
+      max-height: 900px;
+    }
+    .demo-preview video,
+    .demo-preview img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .chip{
+      font-size: 10px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.30);
+      border: 2px solid rgba(255,255,255,0.10);
+      opacity: 0.92;
+    }
+
+    .made-nav{
+      margin-top: 18px;
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(60px);
+      filter: blur(2px);
+    }
+    .made-nav.on {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+      transition: 900ms cubic-bezier(.18,.9,.2,1);
+    }
+
+    .pixel-btn-sm{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 18px 22px;
+      min-width: min(520px, calc(100vw - 48px));
+      border-radius: 18px;
+      border: 3px solid rgba(53,255,122,0.65);
+      background: rgba(0,0,0,0.28);
+      box-shadow: 0 9px 0 rgba(0,0,0,0.36), 0 22px 70px rgba(0,0,0,0.42);
+      transition: transform 120ms linear, box-shadow 120ms linear, background 120ms linear, border-color 120ms linear;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.65);
+    }
+    .pixel-btn-sm:hover{
+      transform: translateY(2px);
+      box-shadow: 0 7px 0 rgba(0,0,0,0.30), 0 18px 60px rgba(0,0,0,0.38);
+      background: rgba(53,255,122,0.10);
+      border-color: rgba(53,255,122,0.92);
+    }
+    .pixel-btn-sm:active{
+      transform: translateY(7px);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.24), 0 16px 54px rgba(0,0,0,0.34);
+    }
+
+    .made-footer{
+      margin-top: 14px;
+      font-size: 10px;
+      opacity: 0.75;
+      text-align: center;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+    }
+
+    /* ---------- PAGE4 (bg7/bg4/bg6) EXPERIENCE ---------- */
+    #experience { overflow: hidden; position: relative; }
+    
+    .experience-title {
+      font-size: 22px;
+      letter-spacing: 1px;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+      text-align: center;
+      margin-bottom: 40px;
+      padding-top: 20px;
+      color: rgba(53,255,122,0.95);
+    }
+    
+    .timeline-container {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(800px, calc(100% - 48px));
+      z-index: 100;
+    }
+
+    .timeline-line {
+      height: 6px;
+      background: rgba(0,0,0,0.45);
+      border: 2px solid rgba(53,255,122,0.35);
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-progress {
+      height: 100%;
+      background: rgba(53,255,122,0.65);
+      box-shadow: 0 0 18px rgba(53,255,122,0.35);
+      width: 0%;
+      transition: width 0.5s cubic-bezier(.18,.9,.2,1);
+    }
+
+    .pikachu-runner {
+      position: absolute;
+      top: -40px;
+      left: 0%;
+      width: 70px;
+      height: 70px;
+      transform: translateX(-50%);
+      transition: left 0.5s cubic-bezier(.18,.9,.2,1), transform 0.2s ease;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.55));
+      cursor: pointer;
+    }
+    
+    .pikachu-runner:hover {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    .nav-arrows {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .arrow-btn {
+      width: 64px;
+      height: 64px;
+      border: 3px solid rgba(53,255,122,0.55);
+      background: rgba(0,0,0,0.35);
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+    }
+
+    .arrow-btn:hover {
+      background: rgba(53,255,122,0.15);
+      border-color: rgba(53,255,122,0.85);
+      transform: scale(1.1);
+    }
+
+    .arrow-btn:active {
+      transform: scale(0.95);
+    }
+
+    .arrow-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .experience-viewport {
+      padding-top: 140px;
+      padding-bottom: 80px;
+      overflow: hidden;
+    }
+
+    .experience-track {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(.18,.9,.2,1);
+    }
+
+    .experience-slide {
+      min-width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 48px;
+      text-align: center;
+    }
+
+    .exp-content {
+      width: min(700px, 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .exp-logo {
+      height: 100px;
+      width: auto;
+      margin-bottom: 28px;
+      filter: drop-shadow(0 6px 20px rgba(53,255,122,0.35));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .exp-title {
+      font-size: 16px;
+      line-height: 1.6;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.75);
+      margin-bottom: 10px;
+      color: rgba(53,255,122,0.95);
+    }
+
+    .exp-org {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-bottom: 8px;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.75);
+    }
+
+    .exp-date {
+      font-size: 10px;
+      opacity: 0.70;
+      margin-bottom: 20px;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.75);
+    }
+
+    .exp-desc {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(53,255,122,0.18);
+      width: 100%;
+    }
+
+    .exp-item {
+      font-size: 11px;
+      line-height: 1.9;
+      opacity: 0.90;
+      margin-bottom: 14px;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.75);
+      text-align: center;
+    }
+
+    .section-divider {
+      margin: 32px 0;
+      border-top: 2px solid rgba(53,255,122,0.15);
+      width: 100%;
+    }
+
+    /* ---------- PAGE5 (final) NAVIGATION HUB ---------- */
+    #final { overflow: hidden; }
+    
+    .final-title {
+      font-size: 20px;
+      letter-spacing: 1px;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+      text-align: center;
+      margin-bottom: 60px;
+      color: rgba(53,255,122,0.95);
+    }
+
+    .nav-hub {
+      position: relative;
+      width: 600px;
+      height: 600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .center-nyan {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 3px solid rgba(53,255,122,0.45);
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.65);
+      z-index: 10;
+    }
+
+    .center-nyan:hover {
+      transform: scale(1.1);
+      border-color: rgba(53,255,122,0.85);
+      box-shadow: 0 16px 64px rgba(0,0,0,0.75);
+    }
+
+    .center-nyan img {
+      width: 140px;
+      height: auto;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.55));
+    }
+
+    .orbit-btn {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 3px solid rgba(53,255,122,0.55);
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.55);
+      font-size: 11px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .orbit-btn:hover {
+      transform: scale(1.15);
+      border-color: rgba(53,255,122,0.85);
+      background: rgba(53,255,122,0.12);
+      box-shadow: 0 14px 56px rgba(0,0,0,0.65);
+    }
+
+    .orbit-btn img {
+      width: 48px;
+      height: 48px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.45));
+    }
+
+    /* Position buttons in circle */
+    .orbit-btn.top {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .orbit-btn.top-right {
+      top: 15%;
+      right: 5%;
+    }
+
+    .orbit-btn.bottom-right {
+      bottom: 15%;
+      right: 5%;
+    }
+
+    .orbit-btn.bottom {
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .orbit-btn.top-left {
+      top: 15%;
+      left: 5%;
+    }
+
+    @media (max-width: 768px) {
+      .nav-hub { width: 400px; height: 400px; }
+      .center-nyan { width: 140px; height: 140px; }
+      .center-nyan img { width: 100px; }
+      .orbit-btn { width: 100px; height: 100px; font-size: 9px; }
+      .orbit-btn img { width: 36px; height: 36px; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html, body { scroll-behavior: auto; }
+      .scanlines { display:none; }
+      .down-arrow .arrow { animation:none; }
+      .enter-right.on, .enter-up.on { animation: none; opacity: 1; visibility: visible; transform:none; filter:none; }
+      .transition.on { animation: none; opacity: 1; }
+      .pixel-btn:hover, .pixel-btn:active, .pixel-btn-sm:hover, .pixel-btn-sm:active { transform: none; }
+      .made-title, .made-title.on,
+      .made-card, .made-card.on { opacity: 1; transform: none; filter: none; transition: none; }
+    }
+  </style>
 </head>
+
 <body>
-    <p style="text-align: center; padding: 50px; font-family: system-ui;">Redirecting to dashboard...</p>
+  <!-- Sidebar Navigation Toggle (Hamburger) -->
+  <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleNav()"></div>
+
+  <!-- Left Sidebar Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="sidebar-nav-inner">
+      <a class="nav-link" onclick="goToPage('skills.html', 'LOADING SKILLS…')">
+        <img class="pixel" src="assets/icons/star.gif" alt="">
+        <span>SKILLS</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('professional-experience.html', 'LOADING EXPERIENCE…')">
+        <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
+        <span>PROFESSIONAL EXPERIENCE</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('leadership-activities.html', 'LOADING ACTIVITIES…')">
+        <img class="pixel" src="assets/icons/LandC.gif" alt="">
+        <span>LEADERSHIP & ACTIVITIES</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('projects.html', 'LOADING PROJECTS…')">
+        <img class="pixel" src="assets/icons/projects.png" alt="">
+        <span>PROJECTS</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('ctf.html', 'LOADING CTF…')">
+        <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
+        <span>CTF</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('profile.html', 'LOADING PROFILE…')">
+        <img class="pixel" src="assets/icons/profile.png" alt="">
+        <span>PROFILE</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- BG -->
+  <div class="bg-layer bg1 pixel" id="bg1" aria-hidden="true"></div>
+  <div class="bg-layer bg3 pixel" id="bg3" aria-hidden="true"></div>
+  <div class="bg-layer bg5 pixel" id="bg5" aria-hidden="true"></div>
+  <div class="bg-layer bg7 pixel" id="bg7" aria-hidden="true"></div>
+  <div class="bg-layer bg4 pixel" id="bg4" aria-hidden="true"></div>
+  <div class="bg-layer bg6 pixel" id="bg6" aria-hidden="true"></div>
+  <div class="bg-layer final pixel" id="final-bg" aria-hidden="true"></div>
+  <div class="tint" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- WELCOME (bg1) -->
+  <section id="welcome" class="screen">
+    <div class="screen-inner text-center">
+      <h1 class="big-title">Hi, I’m Yahya!</h1>
+      <div class="sub">Passionate Computer Science Student</div>
+
+      <div class="down-arrow" id="goDown" aria-label="Scroll down">
+        <div class="arrow">▼</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 2 (bg3) -->
+  <section id="below" class="screen">
+    <div class="screen-inner">
+      <div class="soft-text max-w-[560px]">
+        <h2 class="text-[16px] md:text-[18px] leading-relaxed">About me</h2>
+        <p class="mt-5 text-[11px] md:text-[12px] leading-[1.9] opacity-90">
+          I’m Yahya Mansoub, a Computer Science Engineering student (4th year) focused on cybersecurity and AI/ML.
+          I like building practical projects, solving CTFs, and writing clean research-grade code.
+        </p>
+        <p class="mt-4 text-[11px] md:text-[12px] leading-[1.9] opacity-85">
+          Tap the profile button to enter the “Profile” page.
+        </p>
+      </div>
+    </div>
+
+    <!-- cutout -->
+    <div class="enter-right cutout-layer" id="cutoutEnter" aria-hidden="true">
+      <div class="cutout-wrap">
+        <img class="cutout-img" src="assets/profile-1.png" alt="Yahya cutout profile" />
+      </div>
+    </div>
+
+    <!-- button -->
+    <div class="enter-up btn-layer" id="btnEnter">
+      <button class="pixel-btn" id="toProfileBtn">
+        <img class="btn-icon pixel"
+             id="profileIcon"
+             data-static="assets/icons/profile.png"
+             data-anim="assets/icons/profile.gif"
+             src="assets/icons/profile.png"
+             alt=""
+             onerror="this.style.display='none'">
+        PROFILE
+      </button>
+    </div>
+
+    <div class="footer-left">© <span id="year"></span> • Yahya Mansoub</div>
+  </section>
+
+  <!-- PAGE 3 (bg5) -->
+  <section id="whatmade" class="screen">
+    <div class="screen-inner">
+      <div class="made-wrap">
+        <div class="made-title" id="madeTitle">WHAT I MADE</div>
+
+        <div class="made-grid">
+          <!-- LEFT project -->
+          <div class="made-card left" id="madeCard1">
+            <a href="https://www.greenenergypark.ma/" target="_blank" rel="noopener noreferrer">
+              <img class="made-logo gep" src="assets/logo_gep.png" alt="Green Energy Park logo">
+            </a>
+
+            <div class="made-name" style="color: rgba(160,255,200,0.96);">
+              Building Health Monitoring Platform
+            </div>
+
+            <div class="made-desc">
+              Full end-to-end system using MPU6050 acceleration sensors, robust IoT + cloud pipeline,
+              a clean real-time dashboard for acceleration signals, and ML/DL models to predict building
+              health status from vibration patterns.
+            </div>
+
+            <div class="made-chips">
+              <span class="chip">Internship</span>
+              <span class="chip">IoT</span>
+              <span class="chip">Cloud</span>
+              <span class="chip">Realtime</span>
+              <span class="chip">ML/DL</span>
+            </div>
+            
+            <button class="made-demo-trigger" onclick="toggleDemo('demo1')">▼ VIEW DEMO</button>
+            <div class="demo-preview" id="demo1">
+              <video controls loop muted>
+                <source src="assets/internship_demo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
+          <!-- RIGHT project -->
+          <div class="made-card right" id="madeCard2">
+            <a href="https://cc.um6p.ma/" target="_blank" rel="noopener noreferrer">
+              <img class="made-logo um6p" src="assets/um6p_cc_logo.png" alt="UM6P College of Computing logo">
+            </a>
+
+            <div class="made-name" style="color: rgba(255,190,160,0.96);">
+              AES Power Analysis (Unsupervised) — Proof of Concept
+            </div>
+
+            <div class="made-desc">
+              Academic proof-of-concept: unsupervised learning pipeline for side-channel power analysis,
+              showing a practical approach toward recovering AES-related information from power traces.
+            </div>
+
+            <div class="made-chips">
+              <span class="chip">Academic</span>
+              <span class="chip">Side-Channel</span>
+              <span class="chip">Unsupervised</span>
+              <span class="chip">AES</span>
+            </div>
+            
+            <button class="made-demo-trigger" onclick="toggleDemo('demo2')">▼ VIEW PRESENTATION</button>
+            <div class="demo-preview" id="demo2">
+              <iframe src="assets/aes_ml_presenration.pdf" 
+                      width="100%" 
+                      height="800px" 
+                      style="border: none; border-radius: 8px;"
+                      title="AES ML Presentation">
+              </iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- bottom nav buttons -->
+        <div class="made-nav" id="madeNav">
+          <button class="pixel-btn-sm" id="toProjectsBtn">
+            <img class="btn-icon-nav pixel"
+                 id="projectsIcon"
+                 data-static="assets/icons/projects.png"
+                 data-anim="assets/icons/projects.gif"
+                 src="assets/icons/projects.png"
+                 alt=""
+                 onerror="this.style.display='none'">
+            PROJECTS
+          </button>
+        </div>
+
+        <div class="made-footer">Next: Skills & full Projects pages.</div>
+      </div>
+
+      <div class="mt-6 text-center text-[10px] opacity-70">
+        © <span id="year2"></span> • Yahya Mansoub
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 4 (bg7/bg4/bg6) EXPERIENCE -->
+  <section id="experience" class="screen">
+    <h2 class="experience-title">WHOM I WORKED WITH</h2>
+
+    <!-- Navigation Arrows -->
+    <div class="nav-arrows">
+      <button class="arrow-btn" id="prevBtn" onclick="navigateExp(-1)">◀</button>
+      <button class="arrow-btn" id="nextBtn" onclick="navigateExp(1)">▶</button>
+    </div>
+
+    <div class="experience-viewport">
+      <div class="experience-track" id="expTrack">
+        
+        <!-- Slide 0: 2025 Green Energy Park -->
+        <div class="experience-slide">
+          <div class="exp-content">
+            <a href="https://www.greenenergypark.ma/" target="_blank" rel="noopener noreferrer">
+              <img class="exp-logo" src="assets/logo_gep.png" alt="Green Energy Park">
+            </a>
+            
+            <div class="exp-title">AI & Systems Development Research Intern</div>
+            <div class="exp-org">Green Energy Park — Benguerir, Morocco</div>
+            <div class="exp-date">June 2025 - August 2025</div>
+            
+            <div class="exp-desc">
+              <div class="exp-item">
+                Researched and optimized an autoencoder model for anomaly detection in IoT sensor data, focusing on architecture and hyperparameter tuning for optimal performance.
+              </div>
+              <div class="exp-item">
+                Engineered the full-stack data pipeline (sensors → microcontrollers → Firebase) and a cloud dashboard (React/Python/Docker) for real-time system monitoring.
+              </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="exp-title">Data Science & Modeling Research Intern</div>
+            <div class="exp-org">UM6P College of Computing & Green Energy Park — Benguerir, Morocco</div>
+            <div class="exp-date">February 2025 - June 2025</div>
+            
+            <div class="exp-desc">
+              <div class="exp-item">
+                Developed a Python tool using Monte Carlo simulation to quantify uncertainty in building Life Cycle Assessments (LCA).
+              </div>
+              <div class="exp-item">
+                Performed sensitivity analysis to identify key variables and provided data-driven recommendations.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 1: ForgeBots -->
+        <div class="experience-slide">
+          <div class="exp-content">
+            <img class="exp-logo" src="assets/forgebots_logo.png" alt="ForgeBots">
+            
+            <div class="exp-title">Board Member / Project Manager</div>
+            <div class="exp-org">ForgeBots – IoT, Robotics & AI</div>
+            <div class="exp-date">Present</div>
+            
+            <div class="exp-desc">
+              <div class="exp-item">
+                Coordinated technical projects across IoT, robotics, and AI domains.
+              </div>
+              <div class="exp-item">
+                Developed and delivered year-long educational courses on IoT & AI concepts.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: ACM Cybersecurity -->
+        <div class="experience-slide">
+          <div class="exp-content">
+            <a href="https://um6p-acm-student.web.app/" target="_blank" rel="noopener noreferrer">
+              <img class="exp-logo" src="assets/um6p_acm_student_chapter_logo-removebg-preview.png" alt="UM6P ACM">
+            </a>
+            
+            <div class="exp-title">Member / Problem Setter</div>
+            <div class="exp-org">ACM Cybersecurity Division — UM6P College of Computing</div>
+            <div class="exp-date">Present</div>
+            
+            <div class="exp-desc">
+              <div class="exp-item">
+                Placed 6th nationally in the NullHat CTF competition.
+              </div>
+              <div class="exp-item">
+                Organized a local CTF event, creating Forensics challenges and managing platform infrastructure.
+              </div>
+              <div class="exp-item">
+                Member of the official CTF team of College of Computing as a Cryptography and Forensics (DFIR) specialist.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Timeline with Sonic -->
+    <div class="timeline-container">
+      <div class="timeline-line">
+        <div class="timeline-progress" id="timelineProgress"></div>
+      </div>
+      <img class="pikachu-runner pixel" id="pikachu" src="assets/icons/sonic-running.gif" alt="Sonic" onclick="toggleRunner()" title="Click to switch character">
+    </div>
+  </section>
+
+  <!-- PAGE 5 (final) NAVIGATION HUB -->
+  <section id="final" class="screen">
+    <div class="screen-inner">
+      <h2 class="final-title">TO KNOW MORE ABOUT ME</h2>
+      
+      <div class="nav-hub">
+        <!-- Center Nyan Button -->
+        <a href="index.html" class="center-nyan">
+          <img class="pixel" src="assets/nyan-cat-poptart-cat.gif" alt="Home">
+        </a>
+
+        <!-- Orbit Buttons -->
+        <a onclick="goTo('skills.html', 'LOADING SKILLS…')" class="orbit-btn top">
+          <img class="pixel" src="assets/icons/star.gif" alt="">
+          <span>SKILLS</span>
+        </a>
+
+        <a href="#" onclick="goTo('professional-experience.html', 'LOADING EXPERIENCE…'); return false;" class="orbit-btn top-right">
+          <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
+          <span>PROFESSIONAL<br>EXPERIENCE</span>
+        </a>
+
+        <a href="projects.html" class="orbit-btn bottom-right">
+          <img class="pixel" src="assets/icons/projects.png" alt="">
+          <span>PROJECTS</span>
+        </a>
+
+        <a href="profile.html" class="orbit-btn bottom">
+          <img class="pixel" src="assets/icons/profile.png" alt="">
+          <span>PROFILE</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- transition overlay -->
+  <div class="transition" id="transition">
+    <div class="loader">
+      <div class="loader-title" id="loaderTitle">LOADING…</div>
+
+      <!-- runner (add this file): assets/firs_moving_right.gif -->
+      <div class="runner pixel" id="runner">
+        <img class="pixel" src="assets/first_moving_right.gif" alt=""
+             onerror="this.style.display='none'">
+      </div>
+
+      <div class="bar">
+        <div class="bar-fill" id="barFill"></div>
+      </div>
+      <div class="loader-hint">Please wait</div>
+    </div>
+  </div>
+
+  <script>
+    // Check sessionStorage first to prevent page flash
+    const loadProExp = sessionStorage.getItem('loadProExp');
+    if (loadProExp === 'true') {
+      sessionStorage.removeItem('loadProExp');
+      // Trigger loading immediately
+      const overlay = document.getElementById('transition');
+      overlay.classList.add('on');
+      setTimeout(() => {
+        goTo('professional-experience.html', 'LOADING EXPERIENCE…');
+      }, 50);
+    }
+    
+    // Check if returning from skills page
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnFrom = urlParams.get('from');
+    
+    if (returnFrom === 'skills') {
+      // Remove query param immediately
+      window.history.replaceState({}, '', 'index.html');
+      
+      const overlay = document.getElementById('transition');
+      const barFill = document.getElementById('barFill');
+      const loaderTitle = document.getElementById('loaderTitle');
+      
+      loaderTitle.textContent = 'RETURNING TO MAIN...';
+      barFill.style.width = '0%';
+      
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 25;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          barFill.style.width = '100%';
+          setTimeout(() => {
+            // Remove the injected style tag that's forcing it visible
+            const forceStyle = document.getElementById('forceLoader');
+            if (forceStyle) forceStyle.remove();
+            overlay.classList.remove('on');
+          }, 200);
+        } else {
+          barFill.style.width = progress + '%';
+        }
+      }, 60);
+    }
+
+    // Toggle navigation bar
+    function toggleNav() {
+      const nav = document.getElementById('sidebarNav');
+      const toggle = document.getElementById('navToggle');
+      const overlay = document.getElementById('sidebarOverlay');
+      nav.classList.toggle('show');
+      toggle.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+
+    // Navigation with loading transition
+    function goToPage(dest, label) {
+      goTo(dest, label);
+    }
+
+    // years
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("year2").textContent = new Date().getFullYear();
+
+    // click arrow -> scroll to below
+    document.getElementById("goDown").addEventListener("click", () => {
+      document.getElementById("below").scrollIntoView({ behavior: "smooth" });
+    });
+
+    // bg crossfade: bg1 -> bg3 -> bg5 -> bg7/bg4/bg6 -> final
+    const bg1 = document.getElementById("bg1");
+    const bg3 = document.getElementById("bg3");
+    const bg5 = document.getElementById("bg5");
+    const bg7 = document.getElementById("bg7");
+    const bg4 = document.getElementById("bg4");
+    const bg6 = document.getElementById("bg6");
+    const finalBg = document.getElementById("final-bg");
+    const below = document.getElementById("below");
+    const whatmade = document.getElementById("whatmade");
+    const experience = document.getElementById("experience");
+    const final = document.getElementById("final");
+
+    function clamp01(x){ return Math.min(1, Math.max(0, x)); }
+
+    let currentExpSlide = 0;
+    const bgExperience = [bg7, bg4, bg6];
+
+    function tick(){
+      const y = window.scrollY;
+
+      // transition 1: bg1 -> bg3 around "below"
+      const start13 = below.offsetTop - window.innerHeight * 0.90;
+      const end13   = below.offsetTop + window.innerHeight * 0.20;
+      const a = clamp01((y - start13) / (end13 - start13));
+
+      // transition 2: bg3 -> bg5 around "whatmade"
+      const start35 = whatmade.offsetTop - window.innerHeight * 0.90;
+      const end35   = whatmade.offsetTop + window.innerHeight * 0.20;
+      const b = clamp01((y - start35) / (end35 - start35));
+
+      // transition 3: bg5 -> bg7 around "experience"
+      const start57 = experience.offsetTop - window.innerHeight * 0.90;
+      const end57   = experience.offsetTop + window.innerHeight * 0.20;
+      const c = clamp01((y - start57) / (end57 - start57));
+
+      // transition 4: experience bgs -> final around "final"
+      const startFinal = final.offsetTop - window.innerHeight * 0.90;
+      const endFinal   = final.offsetTop + window.innerHeight * 0.20;
+      const d = clamp01((y - startFinal) / (endFinal - startFinal));
+
+      bg1.style.opacity = String(1 - a);
+      bg3.style.opacity = String((1 - b) * a * (1 - c));
+      bg5.style.opacity = String(b * (1 - c) * (1 - d));
+      
+      // Show appropriate exp background based on slide
+      bgExperience.forEach((bg, i) => {
+        bg.style.opacity = (i === currentExpSlide) ? String(c * (1 - d)) : '0';
+      });
+
+      finalBg.style.opacity = String(d);
+
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    // show page2 elements ONLY when you actually arrived at page2
+    const cutoutEnter = document.getElementById("cutoutEnter");
+    const btnEnter = document.getElementById("btnEnter");
+    let played2 = false;
+
+    const obs2 = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if(e.isIntersecting && e.intersectionRatio >= 0.62 && !played2){
+          played2 = true;
+          cutoutEnter.classList.add("on");
+          setTimeout(() => btnEnter.classList.add("on"), 200);
+          obs2.disconnect();
+        }
+      });
+    }, { threshold: [0, 0.35, 0.62, 0.8] });
+
+    obs2.observe(document.getElementById("below"));
+
+    // PAGE3 entrance
+    const madeTitle = document.getElementById("madeTitle");
+    const madeCard1 = document.getElementById("madeCard1");
+    const madeCard2 = document.getElementById("madeCard2");
+    const madeNav = document.getElementById("madeNav");
+    let played3 = false;
+
+    const obs3 = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if(e.isIntersecting && e.intersectionRatio >= 0.35 && !played3){
+          played3 = true;
+          madeTitle.classList.add("on");
+          setTimeout(() => madeCard1.classList.add("on"), 120);
+          setTimeout(() => madeCard2.classList.add("on"), 240);
+          setTimeout(() => madeNav.classList.add("on"), 360);
+          obs3.disconnect();
+        }
+      });
+    }, { threshold: [0, 0.2, 0.35, 0.55] });
+
+    obs3.observe(document.getElementById("whatmade"));
+
+    // Show nav-toggle when reaching final section
+    const navToggleBtn = document.getElementById('navToggle');
+    let navToggleShown = false;
+
+    const obsFinal = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if(e.isIntersecting && e.intersectionRatio >= 0.3 && !navToggleShown){
+          navToggleShown = true;
+          navToggleBtn.classList.add('visible');
+        }
+      });
+    }, { threshold: [0, 0.15, 0.3, 0.5] });
+
+    obsFinal.observe(document.getElementById("final"));
+
+    // toggle demo preview
+    function toggleDemo(demoId) {
+      const demo = document.getElementById(demoId);
+      if (!demo) return;
+      demo.classList.toggle('show');
+      
+      // auto-play video if it's being shown
+      if (demo.classList.contains('show')) {
+        const video = demo.querySelector('video');
+        if (video) video.play();
+      }
+    }
+
+    // hover icon anim (png -> gif only on hover)
+    function attachHoverSwap(btnId, imgId){
+      const btn = document.getElementById(btnId);
+      const img = document.getElementById(imgId);
+      if(!btn || !img || !img.dataset.static || !img.dataset.anim) return;
+      btn.addEventListener("mouseenter", () => img.src = img.dataset.anim);
+      btn.addEventListener("mouseleave", () => img.src = img.dataset.static);
+    }
+    attachHoverSwap("toProfileBtn", "profileIcon");
+    attachHoverSwap("toProjectsBtn", "projectsIcon");
+
+    // Experience navigation
+    const totalExpSlides = 3;
+    const expTrack = document.getElementById('expTrack');
+    const pikachu = document.getElementById('pikachu');
+    const timelineProgress = document.getElementById('timelineProgress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function navigateExp(direction) {
+      const newSlide = currentExpSlide + direction;
+      if (newSlide < 0 || newSlide >= totalExpSlides) return;
+      currentExpSlide = newSlide;
+      updateExpView();
+    }
+
+    function updateExpView() {
+      expTrack.style.transform = `translateX(-${currentExpSlide * 100}%)`;
+      const progress = (currentExpSlide / (totalExpSlides - 1)) * 100;
+      timelineProgress.style.width = progress + '%';
+      pikachu.style.left = progress + '%';
+      prevBtn.classList.toggle('disabled', currentExpSlide === 0);
+      nextBtn.classList.toggle('disabled', currentExpSlide === totalExpSlides - 1);
+    }
+
+    updateExpView();
+
+    // Toggle runner character
+    let isSonic = true;
+    function toggleRunner() {
+      const runner = document.getElementById('pikachu');
+      if (isSonic) {
+        runner.src = 'assets/icons/pikachu.gif';
+        runner.alt = 'Pikachu';
+        isSonic = false;
+      } else {
+        runner.src = 'assets/icons/sonic-running.gif';
+        runner.alt = 'Sonic';
+        isSonic = true;
+      }
+    }
+
+    // Keyboard navigation for experience
+    document.addEventListener('keydown', (e) => {
+      const expSection = document.getElementById('experience');
+      const rect = expSection.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        if (e.key === 'ArrowLeft') navigateExp(-1);
+        if (e.key === 'ArrowRight') navigateExp(1);
+      }
+    });
+
+    // game transition (shared)
+    const overlay = document.getElementById("transition");
+    const barFill = document.getElementById("barFill");
+    const loaderTitle = document.getElementById("loaderTitle");
+    const runner = document.getElementById("runner");
+
+    function goTo(dest, label){
+      loaderTitle.textContent = label || "LOADING…";
+      overlay.classList.add("on");
+      barFill.style.width = "0%";
+
+      // optional: little bob on runner
+      if(runner) runner.style.opacity = "0.95";
+
+      let p = 0;
+      const timer = setInterval(() => {
+        p += (p < 70) ? (10 + Math.random()*14) : (4 + Math.random()*8);
+        if(p >= 100){
+          p = 100;
+          barFill.style.width = p + "%";
+          clearInterval(timer);
+          setTimeout(() => { window.location.href = dest; }, 180);
+        } else {
+          barFill.style.width = Math.floor(p) + "%";
+        }
+      }, 70);
+    }
+
+    document.getElementById("toProfileBtn").addEventListener("click", () => goTo("profile.html", "LOADING PROFILE…"));
+    document.getElementById("toProjectsBtn").addEventListener("click", () => goTo("projects.html", "LOADING PROJECTS…"));
+  </script>
 </body>
 </html>

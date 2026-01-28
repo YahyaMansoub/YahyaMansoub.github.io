@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CTF Competitions — Yahya Mansoub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #a855f7;
+      --text: #d9ffe7;
+      --green: #35ff7a;
+      --cyan: #00d9ff;
+      --red: #ff4757;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #0a0a1e;
+      color: var(--text);
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    
+    .pixel { 
+      image-rendering: pixelated; 
+      image-rendering: crisp-edges; 
+    }
+
+    /* Background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      background: url("assets/CTF_bg.gif") center/cover no-repeat;
+      opacity: 0.3;
+    }
+
+    .tint {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: linear-gradient(180deg, rgba(10,10,30,0.8), rgba(10,10,30,0.95));
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      mix-blend-mode: multiply;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      height: 100%;
+      background: rgba(10, 10, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-right: 2px solid rgba(168, 85, 247, 0.5);
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-nav.active {
+      transform: translateX(0);
+    }
+
+    .sidebar-nav-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 80px 20px 30px 20px;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    /* Navigation Toggle (Hamburger) */
+    .nav-toggle {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid rgba(168, 85, 247, 0.5);
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-toggle:hover {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: rgba(168, 85, 247, 0.8);
+    }
+
+    .nav-toggle-line {
+      width: 28px;
+      height: 3px;
+      background: rgba(168, 85, 247, 0.8);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+
+    /* Sidebar Overlay */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 20px;
+      border: 2px solid rgba(168, 85, 247, 0.3);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      color: rgba(168, 85, 247, 0.8);
+      text-decoration: none;
+      font-size: 10px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .nav-link:hover {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: rgba(168, 85, 247, 0.6);
+      transform: translateX(8px);
+      color: #a855f7;
+    }
+
+    .nav-link img {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Back Button */
+    .back-btn {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      padding: 15px 25px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      background: rgba(168, 85, 247, 0.3);
+      transform: translateX(5px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 30px 60px 30px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+      margin-bottom: 60px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary); }
+      to { text-shadow: 0 0 30px var(--primary), 0 0 60px var(--primary); }
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    .stat-card {
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(168, 85, 247, 0.3);
+      border-color: rgba(168, 85, 247, 0.7);
+    }
+
+    .stat-value {
+      font-size: 36px;
+      color: var(--primary);
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px var(--primary);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text);
+      opacity: 0.8;
+    }
+
+    /* CTF Card */
+    .ctf-card {
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 40px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ctf-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, transparent, rgba(168, 85, 247, 0.3), transparent);
+      border-radius: 16px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .ctf-card:hover::before {
+      opacity: 1;
+    }
+
+    .ctf-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(168, 85, 247, 0.3);
+      border-color: rgba(168, 85, 247, 0.7);
+    }
+
+    .ctf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .ctf-title {
+      font-size: 24px;
+      color: var(--primary);
+      text-shadow: 0 0 10px var(--primary);
+    }
+
+    .ctf-rank {
+      font-size: 18px;
+      color: var(--green);
+      padding: 10px 20px;
+      background: rgba(53, 255, 122, 0.1);
+      border: 2px solid rgba(53, 255, 122, 0.3);
+      border-radius: 8px;
+    }
+
+    .ctf-date {
+      font-size: 12px;
+      color: var(--cyan);
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    .ctf-description {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 2;
+      opacity: 0.87;
+      margin-bottom: 25px;
+    }
+
+    .ctf-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .category-tag {
+      padding: 8px 16px;
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      border-radius: 6px;
+      font-size: 10px;
+      color: var(--primary);
+    }
+
+    .ctf-achievements {
+      list-style: none;
+      padding: 0;
+    }
+
+    .ctf-achievements li {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 2;
+      opacity: 0.82;
+      padding-left: 25px;
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .ctf-achievements li::before {
+      content: '◆';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-size: 12px;
+    }
+
+    /* Section Title */
+    .section-title {
+      font-size: 24px;
+      color: var(--cyan);
+      text-shadow: 0 0 15px var(--cyan);
+      margin: 60px 0 40px 0;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 20px;
+      }
+
+      .ctf-card {
+        padding: 25px;
+      }
+
+      .ctf-title {
+        font-size: 18px;
+      }
+
+      .ctf-header {
+        flex-direction: column;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Background -->
+  <div class="bg"></div>
+  <div class="tint"></div>
+  <div class="scanlines"></div>
+
+  <!-- Sidebar Navigation Toggle (Hamburger) -->
+  <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleNav()"></div>
+
+  <!-- Left Sidebar Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="sidebar-nav-inner">
+      <a class="nav-link" href="index.html">
+        <img class="pixel" src="assets/icons/home.gif" alt="">
+        <span>HOME</span>
+      </a>
+      <a class="nav-link" href="skills.html">
+        <img class="pixel" src="assets/icons/star.gif" alt="">
+        <span>SKILLS</span>
+      </a>
+      <a class="nav-link" href="professional-experience.html">
+        <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
+        <span>PROF EXPERIENCE</span>
+      </a>
+      <a class="nav-link" href="leadership-activities.html">
+        <img class="pixel" src="assets/icons/LandC.gif" alt="">
+        <span>LEADERSHIP & ACTIVITIES</span>
+      </a>
+      <a class="nav-link" href="projects.html">
+        <img class="pixel" src="assets/icons/projects.png" alt="">
+        <span>PROJECTS</span>
+      </a>
+      <a class="nav-link" href="ctf.html">
+        <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
+        <span>CTF</span>
+      </a>
+      <a class="nav-link" href="profile.html">
+        <img class="pixel" src="assets/icons/profile.png" alt="">
+        <span>PROFILE</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Back Button -->
+  <a href="profile.html" class="back-btn">BACK ▶</a>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1 class="page-title">CTF COMPETITIONS</h1>
+
+    <!-- Team Info Banner -->
+    <div class="ctf-card" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.6); margin-bottom: 50px;">
+      <div class="ctf-header" style="align-items: center;">
+        <div>
+          <div class="ctf-title" style="font-size: 28px;">Mi9chada Team</div>
+          <div class="ctf-date" style="font-size: 14px; margin-bottom: 15px;">CTFTime Registered Team</div>
+          <div class="ctf-description" style="margin-bottom: 15px;">
+            Active CTF team participating in national and international cybersecurity competitions.
+          </div>
+          <a href="https://ctftime.org/team/418761" target="_blank" style="display: inline-block; padding: 12px 24px; background: rgba(168, 85, 247, 0.3); border: 2px solid rgba(168, 85, 247, 0.6); border-radius: 8px; color: var(--primary); text-decoration: none; font-size: 12px; transition: all 0.3s ease;">
+            VIEW ON CTFTIME →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">TOP 100</div>
+        <div class="stat-label">CTFTIME GLOBAL</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">7+</div>
+        <div class="stat-label">CTF COMPETITIONS</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">+20</div>
+        <div class="stat-label">CHALLENGES SOLVED</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">MAJOR COMPETITIONS</h2>
+
+    <!-- IDEH 7 -->
+    <div class="ctf-card">
+      <div class="ctf-header">
+        <div class="ctf-title">IDEH 7 - International Days of Ethical Hacking</div>
+        <div class="ctf-rank">🏅 4th Place Nationally</div>
+      </div>
+      <div class="ctf-date">January 17-18, 2025</div>
+      <div class="ctf-description">
+        Competed in the 7th Edition of the International Days of Ethical Hacking, themed "Into the Breach: Hacking the Hacker's Mind." The event featured cutting-edge cybersecurity discussions, hands-on workshops, and an immersive CTF experience testing both technical skills and strategic thinking. Competed as "Les Penitent Ones" team among 40 teams from universities across Morocco.
+      </div>
+      <div class="ctf-categories">
+        <span class="category-tag">Ethical Hacking</span>
+        <span class="category-tag">Web Security</span>
+        <span class="category-tag">Network Security</span>
+        <span class="category-tag">Strategic Thinking</span>
+      </div>
+      <ul class="ctf-achievements">
+        <li>Achieved 4th place nationally among 40 university teams</li>
+        <li>Engaged with modern threat landscapes and attacker mindsets</li>
+        <li>Participated in hands-on workshops and practical CTF challenges</li>
+        <li>Team "Les Penitent Ones": Yahya Mansoub, Mohammed-Rida El hani, Othmane Azoubi, Aya Squalli Houssaini</li>
+        <li>Organized by CIT INPT, bringing together students and cybersecurity professionals</li>
+      </ul>
+      
+      <!-- IDEH Media Gallery -->
+      <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="font-size: 12px; color: var(--primary); letter-spacing: 1px; border-bottom: 2px solid rgba(168, 85, 247, 0.3); padding-bottom: 10px;">EVENT HIGHLIGHTS</div>
+        
+        <!-- Certificate -->
+        <div style="background: rgba(168, 85, 247, 0.08); border: 2px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 10px; color: var(--cyan); letter-spacing: 1px;">📜 OFFICIAL CERTIFICATE</div>
+          <a href="data/IDEH_Certificate.pdf" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; background: rgba(168, 85, 247, 0.2); border: 2px solid var(--primary); border-radius: 8px; color: var(--green); text-decoration: none; font-size: 9px; transition: all 0.3s ease; width: fit-content;">
+            <span>VIEW CERTIFICATE</span>
+            <span style="font-size: 12px;">→</span>
+          </a>
+        </div>
+        
+        <!-- Event Photos -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+          <div style="position: relative; overflow: hidden; border-radius: 12px; border: 2px solid rgba(168, 85, 247, 0.3); aspect-ratio: 16/10; background: rgba(0,0,0,0.3);">
+            <img src="data/IDEH_group_pic.jpg" alt="IDEH Group" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+          
+          <div style="position: relative; overflow: hidden; border-radius: 12px; border: 2px solid rgba(168, 85, 247, 0.3); aspect-ratio: 16/10; background: rgba(0,0,0,0.3);">
+            <img src="data/IDEH_1.jpg" alt="IDEH" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+          
+          <div style="position: relative; overflow: hidden; border-radius: 12px; border: 2px solid rgba(168, 85, 247, 0.3); aspect-ratio: 16/10; background: rgba(0,0,0,0.3);">
+            <img src="data/IDEH_2.jpg" alt="IDEH" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+          
+          <div style="position: relative; overflow: hidden; border-radius: 12px; border: 2px solid rgba(168, 85, 247, 0.3); aspect-ratio: 16/10; background: rgba(0,0,0,0.3);">
+            <img src="data/IDEH_env.jpg" alt="IDEH" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASIS CTF Finals 2025 -->
+    <div class="ctf-card">
+      <div class="ctf-header">
+        <div class="ctf-title">ASIS CTF Finals 2025</div>
+        <div class="ctf-rank">🥇 1st Morocco | 🥈 2nd MENA | 🌍 34th Global</div>
+      </div>
+      <div class="ctf-date">January 2025</div>
+      <div class="ctf-description">
+        Competed in the prestigious ASIS CTF Finals organized by the ASIS Team in Iran, recognized globally for its technically challenging and research-focused problems. Team Mi9chada, coached by Prof. Karima Echihabi and Prof. Anas Motii, qualified through rigorous preliminary rounds to compete against top international teams.
+      </div>
+      <div class="ctf-categories">
+        <span class="category-tag">Binary Exploitation</span>
+        <span class="category-tag">Cryptography</span>
+        <span class="category-tag">Reverse Engineering</span>
+        <span class="category-tag">Web Security</span>
+      </div>
+      <ul class="ctf-achievements">
+        <li>Achieved 34th place globally among elite international teams</li>
+        <li>Secured 2nd place in the MENA region</li>
+        <li>Ranked 1st in Morocco, demonstrating national excellence</li>
+        <li>Team: Othmane Azoubi, Mohammed-Rida El hani, Mohamed Amine El Kalai, Hamza Gougasse, Yahya Mansoub, Aya Squalli Houssaini</li>
+      </ul>
+    </div>
+
+    <!-- UofTCTF 2025 -->
+    <div class="ctf-card">
+      <div class="ctf-header">
+        <div class="ctf-title">UofTCTF 2025</div>
+        <div class="ctf-rank">🥇 1st Morocco | 🌍 24th Worldwide</div>
+      </div>
+      <div class="ctf-date">January 2025</div>
+      <div class="ctf-description">
+        Participated in a 48-hour international Capture The Flag competition organized by the University of Toronto. The competition was held in the Open Division, allowing participation from both students and professionals worldwide. Among 1,551 teams from around the globe, the ACM UM6P CTF team achieved an outstanding performance.
+      </div>
+      <div class="ctf-categories">
+        <span class="category-tag">Web Exploitation</span>
+        <span class="category-tag">Cryptography</span>
+        <span class="category-tag">Forensics</span>
+        <span class="category-tag">Reverse Engineering</span>
+      </div>
+      <ul class="ctf-achievements">
+        <li>Achieved 24th place worldwide out of 1,551 international teams</li>
+        <li>Secured 1st place in Morocco</li>
+        <li>Demonstrated strong technical expertise and teamwork over 48 hours</li>
+        <li>Team included 16 members: Abir Fakhreddine, Ahmed Quadimi, Anir Achibane, Aya Squalli Houssaini, Hamza Gougasse, Imad Boutbaoucht, Khadija Lekbiri, Malek Awlaqi, Mohamed Amine El Kalai, Mohammed-Rida El hani, Mouad Bensafir, Othmane Azoubi, Riad Benbrahim, Soufiane Essahli, Yahya Mansoub, Youssef Bentaleb, Youssef Guerairate</li>
+      </ul>
+      <div style="margin-top: 15px;">
+        <a href="https://lnkd.in/dGipg_RR" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: rgba(168, 85, 247, 0.2); border: 2px solid var(--primary); border-radius: 8px; color: var(--cyan); text-decoration: none; font-size: 8px; transition: all 0.3s ease;">
+          <span>VIEW OFFICIAL SCOREBOARD</span>
+          <span style="font-size: 10px;">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- NullHat CTF -->
+    <div class="ctf-card">
+      <div class="ctf-header">
+        <div class="ctf-title">NullHat CTF</div>
+        <div class="ctf-rank">🏆 6th Place Nationally</div>
+      </div>
+      <div class="ctf-date">2024</div>
+      <div class="ctf-description">
+        Competed in one of Morocco's premier cybersecurity competitions, placing 6th nationally among hundreds of participants from universities and cybersecurity clubs across the country.
+      </div>
+      <div class="ctf-categories">
+        <span class="category-tag">Forensics</span>
+        <span class="category-tag">Web Exploitation</span>
+        <span class="category-tag">Cryptography</span>
+        <span class="category-tag">Binary Exploitation</span>
+      </div>
+      <ul class="ctf-achievements">
+        <li>Solved complex forensics challenges involving memory dumps and disk images</li>
+        <li>Identified and exploited web vulnerabilities in real-world scenarios</li>
+        <li>Performed cryptanalysis on custom encryption schemes</li>
+        <li>Collaborated with team members for time-critical problem solving</li>
+      </ul>
+      
+      <!-- NullHat Media Gallery -->
+      <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="font-size: 12px; color: var(--primary); letter-spacing: 1px; border-bottom: 2px solid rgba(168, 85, 247, 0.3); padding-bottom: 10px;">COMPETITION HIGHLIGHTS</div>
+        
+        <!-- Certificate -->
+        <div style="background: rgba(168, 85, 247, 0.08); border: 2px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 10px; color: var(--cyan); letter-spacing: 1px;">📜 OFFICIAL CERTIFICATE</div>
+          <a href="data/NullHat_Certificate.pdf" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; background: rgba(168, 85, 247, 0.2); border: 2px solid var(--primary); border-radius: 8px; color: var(--green); text-decoration: none; font-size: 9px; transition: all 0.3s ease; width: fit-content;">
+            <span>VIEW CERTIFICATE</span>
+            <span style="font-size: 12px;">→</span>
+          </a>
+        </div>
+        
+        <!-- Team Photos -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+          <div style="position: relative; overflow: hidden; border-radius: 12px; border: 2px solid rgba(168, 85, 247, 0.3); aspect-ratio: 16/10; background: rgba(0,0,0,0.3);">
+            <img src="data/NullHat_grp_pic.jpg" alt="NullHat Group Photo" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(10,10,30,0.95), transparent); padding: 12px; font-size: 8px; color: var(--text);">Group Photo</div>
+          </div>
+          
+          <div style="position: relative; overflow: hidden; border-radius: 12px; border: 2px solid rgba(168, 85, 247, 0.3); aspect-ratio: 16/10; background: rgba(0,0,0,0.3);">
+            <img src="data/NullHat_pic1.jpg" alt="NullHat Competition" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(10,10,30,0.95), transparent); padding: 12px; font-size: 8px; color: var(--text);">Competition Scene</div>
+          </div>
+          
+          <div style="position: relative; overflow: hidden; border-radius: 12px; border: 2px solid rgba(168, 85, 247, 0.3); aspect-ratio: 16/10; background: rgba(0,0,0,0.3);">
+            <img src="data/NullHat_pic2.jpg" alt="NullHat Event" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(10,10,30,0.95), transparent); padding: 12px; font-size: 8px; color: var(--text);">Event Venue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASIS CTF Finals 2025 -->
+    <div class="ctf-card">
+      <div class="ctf-header">
+        <div class="ctf-title">ASIS CTF Finals 2025</div>
+        <div class="ctf-rank">🥇 1st Morocco | 🥈 2nd MENA | 🌍 34th Global</div>
+      </div>
+      <div class="ctf-date">January 2025</div>
+      <div class="ctf-description">
+        Competed in the prestigious ASIS CTF Finals organized by the ASIS Team in Iran, recognized globally for its technically challenging and research-focused problems. Team Mi9chada, coached by Prof. Karima Echihabi and Prof. Anas Motii, qualified through rigorous preliminary rounds to compete against top international teams.
+      </div>
+      <div class="ctf-categories">
+        <span class="category-tag">Binary Exploitation</span>
+        <span class="category-tag">Cryptography</span>
+        <span class="category-tag">Reverse Engineering</span>
+        <span class="category-tag">Web Security</span>
+      </div>
+      <ul class="ctf-achievements">
+        <li>Achieved 34th place globally among elite international teams</li>
+        <li>Secured 2nd place in the MENA region</li>
+        <li>Ranked 1st in Morocco, demonstrating national excellence</li>
+        <li>Team: Othmane Azoubi, Mohammed-Rida El hani, Mohamed Amine El Kalai, Hamza Gougasse, Yahya Mansoub, Aya Squalli Houssaini</li>
+      </ul>
+    </div>
+
+    <!-- UofTCTF 2025 -->
+    <div class="ctf-card">
+      <div class="ctf-header">
+        <div class="ctf-title">UofTCTF 2025</div>
+        <div class="ctf-rank">🥇 1st Morocco | 🌍 24th Worldwide</div>
+      </div>
+      <div class="ctf-date">January 2025</div>
+      <div class="ctf-description">
+        Participated in a 48-hour international Capture The Flag competition organized by the University of Toronto. The competition was held in the Open Division, allowing participation from both students and professionals worldwide. Among 1,551 teams from around the globe, the ACM UM6P CTF team achieved an outstanding performance.
+      </div>
+      <div class="ctf-categories">
+        <span class="category-tag">Web Exploitation</span>
+        <span class="category-tag">Cryptography</span>
+        <span class="category-tag">Forensics</span>
+        <span class="category-tag">Reverse Engineering</span>
+      </div>
+      <ul class="ctf-achievements">
+        <li>Achieved 24th place worldwide out of 1,551 international teams</li>
+        <li>Secured 1st place in Morocco</li>
+        <li>Demonstrated strong technical expertise and teamwork over 48 hours</li>
+        <li>Team included 16 members: Abir Fakhreddine, Ahmed Quadimi, Anir Achibane, Aya Squalli Houssaini, Hamza Gougasse, Imad Boutbaoucht, Khadija Lekbiri, Malek Awlaqi, Mohamed Amine El Kalai, Mohammed-Rida El hani, Mouad Bensafir, Othmane Azoubi, Riad Benbrahim, Soufiane Essahli, Yahya Mansoub, Youssef Bentaleb, Youssef Guerairate</li>
+      </ul>
+      <div style="margin-top: 15px;">
+        <a href="https://lnkd.in/dGipg_RR" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: rgba(168, 85, 247, 0.2); border: 2px solid var(--primary); border-radius: 8px; color: var(--cyan); text-decoration: none; font-size: 8px; transition: all 0.3s ease;">
+          <span>VIEW OFFICIAL SCOREBOARD</span>
+          <span style="font-size: 10px;">→</span>
+        </a>
+      </div>
+    </div>
+
+    <h2 class="section-title">ORGANIZED EVENTS</h2>
+
+    <!-- Local CTF -->
+    <div class="ctf-card">
+      <div class="ctf-header">
+        <div class="ctf-title">Local CTF Competition</div>
+        <div class="ctf-rank">🎯 Organizer</div>
+      </div>
+      <div class="ctf-date">2024</div>
+      <div class="ctf-description">
+        Organized and managed a comprehensive Capture The Flag competition for the local cybersecurity community, taking responsibility for challenge creation, platform setup, and event coordination.
+      </div>
+      <div class="ctf-categories">
+        <span class="category-tag">Event Management</span>
+        <span class="category-tag">Challenge Design</span>
+        <span class="category-tag">Infrastructure</span>
+      </div>
+      <ul class="ctf-achievements">
+        <li>Created engaging Forensics challenges from scratch</li>
+        <li>Set up and managed the CTF platform infrastructure</li>
+        <li>Ensured smooth competition flow and timely challenge releases</li>
+        <li>Provided hints and support to participants during the event</li>
+        <li>Successfully attracted 50+ participants from various institutions</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">SKILLS & SPECIALIZATIONS</h2>
+
+    <!-- Forensics & Cryptography Specialties -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 30px;">
+      <!-- Digital Forensics -->
+      <div class="ctf-card">
+        <div class="ctf-header">
+          <div class="ctf-title">Digital Forensics</div>
+        </div>
+        <div class="ctf-description">
+          Specialized in digital forensics challenges, including memory analysis, disk forensics, network forensics, and artifact recovery.
+        </div>
+        <div class="ctf-categories">
+          <span class="category-tag">Memory Forensics</span>
+          <span class="category-tag">Disk Analysis</span>
+          <span class="category-tag">Network Captures</span>
+          <span class="category-tag">Metadata Extraction</span>
+        </div>
+        <ul class="ctf-achievements">
+          <li>Proficient with Volatility, Autopsy, and FTK Imager</li>
+          <li>Experience in analyzing malware artifacts and IOCs</li>
+          <li>Skilled in PCAP analysis using Wireshark and tcpdump</li>
+          <li>Capable of recovering deleted files and hidden data</li>
+        </ul>
+      </div>
+
+      <!-- Cryptography -->
+      <div class="ctf-card">
+        <div class="ctf-header">
+          <div class="ctf-title">Cryptography</div>
+        </div>
+        <div class="ctf-description">
+          Specialized in cryptographic challenges, including cryptanalysis, algorithm implementation, and breaking weak encryption schemes.
+        </div>
+        <div class="ctf-categories">
+          <span class="category-tag">Classical Ciphers</span>
+          <span class="category-tag">Modern Cryptography</span>
+          <span class="category-tag">Hash Functions</span>
+          <span class="category-tag">RSA & ECC</span>
+        </div>
+        <ul class="ctf-achievements">
+          <li>Proficient in cryptanalysis of weak implementations</li>
+          <li>Experience with RSA attacks and factorization</li>
+          <li>Skilled in breaking custom encryption schemes</li>
+          <li>Knowledge of symmetric and asymmetric cryptography</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function toggleNav() {
+      const sidebar = document.getElementById('sidebarNav');
+      const overlay = document.getElementById('sidebarOverlay');
+      const toggle = document.getElementById('navToggle');
+      
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      toggle.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

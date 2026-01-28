@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI & Data Science Skills Graph — Yahya Mansoub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root { --primary: #fbbf24; --text: #d9ffe7; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #0a0a1e;
+      color: var(--text);
+      overflow: hidden;
+    }
+    
+    .pixel { 
+      image-rendering: pixelated; 
+      image-rendering: crisp-edges; 
+    }
+
+    /* Background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      background: url("assets/bg8.gif") center/cover no-repeat;
+      opacity: 0.6;
+    }
+
+    .tint {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: linear-gradient(180deg, rgba(10,10,30,0.5), rgba(10,10,30,0.8));
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      mix-blend-mode: multiply;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .page-title {
+      font-size: 28px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+      margin-bottom: 20px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary); }
+      to { text-shadow: 0 0 30px var(--primary), 0 0 60px var(--primary); }
+    }
+
+    /* Back Button */
+    .back-btn {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      padding: 15px 25px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      background: rgba(251, 191, 36, 0.3);
+      transform: translateX(-5px);
+    }
+
+    /* Graph Visualization Styles */
+    #graph-container {
+      width: 100%;
+      height: calc(100vh - 120px);
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    #graph-container:active {
+      cursor: grabbing;
+    }
+
+    #graph-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .node-circle {
+      fill: rgba(251, 191, 36, 0.8);
+      stroke: var(--primary);
+      stroke-width: 2px;
+      cursor: grab;
+      filter: drop-shadow(0 0 10px var(--primary));
+    }
+
+    .node-circle:active {
+      cursor: grabbing;
+    }
+
+    .node-circle:hover {
+      fill: rgba(251, 191, 36, 1);
+      stroke-width: 3px;
+      filter: drop-shadow(0 0 20px var(--primary));
+    }
+
+    .node-label {
+      fill: var(--text);
+      font-size: 10px;
+      text-anchor: middle;
+      pointer-events: none;
+      text-shadow: 0 0 5px rgba(0,0,0,0.8);
+    }
+
+    .node-image {
+      pointer-events: none;
+    }
+
+    .link-line {
+      stroke: var(--primary);
+      stroke-opacity: 0.3;
+      stroke-width: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <div class="bg"></div>
+  <div class="tint"></div>
+  <div class="scanlines"></div>
+
+  <!-- Back Button -->
+  <a href="skills-ai.html" class="back-btn">◀ BACK</a>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1 class="page-title">AI & DATA SCIENCE GRAPH</h1>
+
+    <!-- Graph Container -->
+    <div id="graph-container">
+      <svg id="graph-svg"></svg>
+    </div>
+  </div>
+
+  <script>
+    // Skills data with categories and connections
+    const skillsData = {
+      nodes: [
+        // Programming Languages
+        { id: 'python', name: 'PYTHON', category: 'languages', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg', url: 'https://www.python.org/' },
+        { id: 'c', name: 'C', category: 'languages', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg', url: 'https://en.cppreference.com/w/c' },
+        { id: 'cpp', name: 'C++', category: 'languages', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg', url: 'https://en.cppreference.com/w/' },
+        // Data Analysis
+        { id: 'pandas', name: 'PANDAS', category: 'analysis', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg', url: 'https://pandas.pydata.org/' },
+        { id: 'numpy', name: 'NUMPY', category: 'analysis', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg', url: 'https://numpy.org/' },
+        { id: 'matplotlib', name: 'MATPLOTLIB', category: 'analysis', img: 'https://matplotlib.org/stable/_static/logo2.svg', url: 'https://matplotlib.org/' },
+        { id: 'seaborn', name: 'SEABORN', category: 'analysis', img: 'https://seaborn.pydata.org/_static/logo-wide-lightbg.svg', url: 'https://seaborn.pydata.org/' },
+        { id: 'plotly', name: 'PLOTLY', category: 'analysis', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/plotly/plotly-original.svg', url: 'https://plotly.com/' },
+        { id: 'scipy', name: 'SCIPY', category: 'analysis', img: 'https://scipy.org/images/logo.svg', url: 'https://scipy.org/' },
+        { id: 'jupyter', name: 'JUPYTER', category: 'analysis', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg', url: 'https://jupyter.org/' },
+        // Machine Learning
+        { id: 'sklearn', name: 'SCIKIT-LEARN', category: 'ml', img: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Scikit_learn_logo_small.svg', url: 'https://scikit-learn.org/' },
+        { id: 'xgboost', name: 'XGBOOST', category: 'ml', img: 'https://raw.githubusercontent.com/dmlc/xgboost/master/doc/logo/xgboost-logo.png', url: 'https://xgboost.readthedocs.io/' },
+        { id: 'lightgbm', name: 'LIGHTGBM', category: 'ml', img: 'https://lightgbm.readthedocs.io/en/latest/_static/LightGBM_logo_black_text.svg', url: 'https://lightgbm.readthedocs.io/' },
+        // Deep Learning
+        { id: 'pytorch', name: 'PYTORCH', category: 'dl', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg', url: 'https://pytorch.org/' },
+        { id: 'tensorflow', name: 'TENSORFLOW', category: 'dl', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg', url: 'https://www.tensorflow.org/' },
+        // LLM & NLP
+        { id: 'langchain', name: 'LANGCHAIN', category: 'llm', img: 'https://avatars.githubusercontent.com/u/126733545?s=200&v=4', url: 'https://www.langchain.com/' },
+        { id: 'ollama', name: 'OLLAMA', category: 'llm', img: 'https://avatars.githubusercontent.com/u/151674099?s=200&v=4', url: 'https://ollama.com/' },
+        { id: 'huggingface', name: 'HUGGING FACE', category: 'llm', img: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg', url: 'https://huggingface.co/' },
+        // MLOps
+        { id: 'docker', name: 'DOCKER', category: 'mlops', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg', url: 'https://www.docker.com/' },
+        { id: 'kubernetes', name: 'KUBERNETES', category: 'mlops', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg', url: 'https://kubernetes.io/' },
+        { id: 'streamlit', name: 'STREAMLIT', category: 'mlops', img: 'https://streamlit.io/images/brand/streamlit-mark-color.svg', url: 'https://streamlit.io/' },
+        { id: 'fastapi', name: 'FASTAPI', category: 'mlops', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg', url: 'https://fastapi.tiangolo.com/' }
+      ],
+      links: [
+        // Language to tools
+        { source: 'python', target: 'pandas' },
+        { source: 'python', target: 'numpy' },
+        { source: 'python', target: 'sklearn' },
+        { source: 'python', target: 'pytorch' },
+        { source: 'python', target: 'tensorflow' },
+        { source: 'python', target: 'langchain' },
+        // Data analysis connections
+        { source: 'numpy', target: 'pandas' },
+        { source: 'pandas', target: 'matplotlib' },
+        { source: 'pandas', target: 'seaborn' },
+        { source: 'pandas', target: 'plotly' },
+        { source: 'numpy', target: 'scipy' },
+        { source: 'jupyter', target: 'pandas' },
+        // ML connections
+        { source: 'numpy', target: 'sklearn' },
+        { source: 'pandas', target: 'sklearn' },
+        { source: 'sklearn', target: 'xgboost' },
+        { source: 'sklearn', target: 'lightgbm' },
+        // DL connections
+        { source: 'numpy', target: 'pytorch' },
+        { source: 'numpy', target: 'tensorflow' },
+        // LLM connections
+        { source: 'pytorch', target: 'huggingface' },
+        { source: 'tensorflow', target: 'huggingface' },
+        { source: 'huggingface', target: 'langchain' },
+        { source: 'langchain', target: 'ollama' },
+        // MLOps connections
+        { source: 'pytorch', target: 'fastapi' },
+        { source: 'sklearn', target: 'streamlit' },
+        { source: 'fastapi', target: 'docker' },
+        { source: 'streamlit', target: 'docker' },
+        { source: 'docker', target: 'kubernetes' }
+      ]
+    };
+
+    let simulation;
+
+    function initGraph() {
+      const container = document.getElementById('graph-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      const svg = d3.select('#graph-svg')
+        .attr('width', width)
+        .attr('height', height);
+
+      svg.selectAll('*').remove();
+
+      // Create a group for zoom/pan
+      const g = svg.append('g');
+
+      // Add zoom behavior
+      const zoom = d3.zoom()
+        .scaleExtent([0.1, 4])
+        .on('zoom', (event) => {
+          g.attr('transform', event.transform);
+        });
+
+      svg.call(zoom);
+
+      // Create arrow markers for links
+      svg.append('defs').selectAll('marker')
+        .data(['end'])
+        .enter().append('marker')
+        .attr('id', 'arrowhead')
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 35)
+        .attr('refY', 0)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('d', 'M0,-5L10,0L0,5')
+        .attr('fill', '#fbbf24')
+        .attr('opacity', 0.6);
+
+      // Create force simulation
+      simulation = d3.forceSimulation(skillsData.nodes)
+        .force('link', d3.forceLink(skillsData.links).id(d => d.id).distance(150))
+        .force('charge', d3.forceManyBody().strength(-500))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(50));
+
+      // Create links
+      const link = g.append('g')
+        .selectAll('line')
+        .data(skillsData.links)
+        .enter().append('line')
+        .attr('class', 'link-line')
+        .attr('marker-end', 'url(#arrowhead)');
+
+      // Create nodes group
+      const node = g.append('g')
+        .selectAll('g')
+        .data(skillsData.nodes)
+        .enter().append('g')
+        .call(d3.drag()
+          .on('start', dragstarted)
+          .on('drag', dragged)
+          .on('end', dragended))
+        .on('click', (event, d) => {
+          event.stopPropagation();
+          // Only open link if not dragging
+          if (!event.defaultPrevented) {
+            window.open(d.url, '_blank');
+          }
+        });
+
+      // Add circles
+      node.append('circle')
+        .attr('class', 'node-circle')
+        .attr('r', 30)
+        .attr('fill', d => getCategoryColor(d.category));
+
+      // Add images
+      node.append('image')
+        .attr('class', 'node-image')
+        .attr('xlink:href', d => d.img)
+        .attr('x', -20)
+        .attr('y', -20)
+        .attr('width', 40)
+        .attr('height', 40);
+
+      // Add labels
+      node.append('text')
+        .attr('class', 'node-label')
+        .attr('dy', 45)
+        .text(d => d.name);
+
+      // Update positions on tick
+      simulation.on('tick', () => {
+        link
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+
+        node.attr('transform', d => `translate(${d.x},${d.y})`);
+      });
+    }
+
+    function getCategoryColor(category) {
+      const colors = {
+        'languages': 'rgba(251, 191, 36, 0.8)',
+        'analysis': 'rgba(59, 130, 246, 0.8)',
+        'ml': 'rgba(16, 185, 129, 0.8)',
+        'dl': 'rgba(239, 68, 68, 0.8)',
+        'llm': 'rgba(168, 85, 247, 0.8)',
+        'mlops': 'rgba(245, 158, 11, 0.8)'
+      };
+      return colors[category] || 'rgba(251, 191, 36, 0.8)';
+    }
+
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+      // Prevent triggering zoom/pan while dragging a node
+      event.sourceEvent.stopPropagation();
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+      // Prevent click event after dragging
+      event.sourceEvent.preventDefault();
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      // Keep node fixed at dropped position
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    // Initialize on load
+    window.addEventListener('load', initGraph);
+    window.addEventListener('resize', initGraph);
+  </script>
+</body>
+</html>

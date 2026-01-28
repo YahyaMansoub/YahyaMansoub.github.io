@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cybersecurity Skills Graph — Yahya Mansoub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root { --primary: #a855f7; --text: #d9ffe7; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #0a0a1e;
+      color: var(--text);
+      overflow: hidden;
+    }
+    
+    .pixel { 
+      image-rendering: pixelated; 
+      image-rendering: crisp-edges; 
+    }
+
+    /* Background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      background: url("assets/cyber1.gif") center/cover no-repeat;
+      opacity: 0.6;
+    }
+
+    .tint {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: linear-gradient(180deg, rgba(10,10,30,0.5), rgba(10,10,30,0.8));
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      mix-blend-mode: multiply;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .page-title {
+      font-size: 28px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+      margin-bottom: 20px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary); }
+      to { text-shadow: 0 0 30px var(--primary), 0 0 60px var(--primary); }
+    }
+
+    /* Back Button */
+    .back-btn {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      padding: 15px 25px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      background: rgba(168, 85, 247, 0.3);
+      transform: translateX(-5px);
+    }
+
+    /* Graph Visualization Styles */
+    #graph-container {
+      width: 100%;
+      height: calc(100vh - 120px);
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    #graph-container:active {
+      cursor: grabbing;
+    }
+
+    #graph-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .node-circle {
+      fill: rgba(168, 85, 247, 0.8);
+      stroke: var(--primary);
+      stroke-width: 2px;
+      cursor: grab;
+      filter: drop-shadow(0 0 10px var(--primary));
+    }
+
+    .node-circle:active {
+      cursor: grabbing;
+    }
+
+    .node-circle:hover {
+      fill: rgba(168, 85, 247, 1);
+      stroke-width: 3px;
+      filter: drop-shadow(0 0 20px var(--primary));
+    }
+
+    .node-label {
+      fill: var(--text);
+      font-size: 9px;
+      text-anchor: middle;
+      pointer-events: none;
+      text-shadow: 0 0 5px rgba(0,0,0,0.8);
+    }
+
+    .node-image {
+      pointer-events: none;
+    }
+
+    .link-line {
+      stroke: var(--primary);
+      stroke-opacity: 0.3;
+      stroke-width: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <div class="bg"></div>
+  <div class="tint"></div>
+  <div class="scanlines"></div>
+
+  <!-- Back Button -->
+  <a href="skills-cybersecurity.html" class="back-btn">◀ BACK</a>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1 class="page-title">CYBERSECURITY TOOLS GRAPH</h1>
+
+    <!-- Graph Container -->
+    <div id="graph-container">
+      <svg id="graph-svg"></svg>
+    </div>
+  </div>
+
+  <script>
+    // Skills data with categories and connections
+    const skillsData = {
+      nodes: [
+        // Programming Languages
+        { id: 'python', name: 'PYTHON', category: 'languages', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg', url: 'https://www.python.org/' },
+        { id: 'c', name: 'C', category: 'languages', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg', url: 'https://en.cppreference.com/w/c' },
+        { id: 'bash', name: 'BASH', category: 'languages', img: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg', url: 'https://www.gnu.org/software/bash/' },
+        // Penetration Testing
+        { id: 'nmap', name: 'NMAP', category: 'pentest', img: 'https://nmap.org/images/nmap-logo-256x256.png', url: 'https://nmap.org/' },
+        { id: 'metasploit', name: 'METASPLOIT', category: 'pentest', img: 'https://www.wavetel.fr/wp-content/uploads/2015/12/RAPID7-METASPLOIT-Test-dintrusion.png', url: 'https://www.metasploit.com/' },
+        { id: 'burp', name: 'BURP SUITE', category: 'pentest', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/BurpSuite_Comunity_Edition.svg/2008px-BurpSuite_Comunity_Edition.svg.png', url: 'https://portswigger.net/burp' },
+        { id: 'hydra', name: 'HYDRA', category: 'pentest', img: 'https://www.kali.org/tools/hydra/images/hydra-logo.svg', url: 'https://www.kali.org/tools/hydra/' },
+        { id: 'wireshark', name: 'WIRESHARK', category: 'pentest', img: 'https://www.wireshark.org/assets/icons/wireshark-fin@2x.png', url: 'https://www.wireshark.org/' },
+        { id: 'sqlmap', name: 'SQLMAP', category: 'pentest', img: 'assets/icons/sql-map-logo.png', url: 'https://sqlmap.org/' },
+        { id: 'john', name: 'JOHN', category: 'pentest', img: 'https://www.openwall.com/logo.png', url: 'https://www.openwall.com/john/' },
+        { id: 'hashcat', name: 'HASHCAT', category: 'pentest', img: 'https://hashcat.net/s/i/hashcat-icon.png', url: 'https://hashcat.net/hashcat/' },
+        { id: 'gobuster', name: 'GOBUSTER', category: 'pentest', img: 'assets/icons/gobuster-logo.svg', url: 'https://www.kali.org/tools/gobuster/' },
+        { id: 'rustscan', name: 'RUSTSCAN', category: 'pentest', img: 'assets/icons/rustscan.png', url: 'https://github.com/RustScan/RustScan' },
+        { id: 'ffuf', name: 'FFUF', category: 'pentest', img: 'assets/icons/ffuf.png', url: 'https://github.com/ffuf/ffuf' },
+        // Digital Forensics
+        { id: 'autopsy', name: 'AUTOPSY', category: 'forensics', img: 'assets/icons/autopsy.png', url: 'https://www.autopsy.com/' },
+        { id: 'volatility', name: 'VOLATILITY', category: 'forensics', img: 'assets/icons/volatility.png', url: 'https://www.volatilityfoundation.org/' },
+        { id: 'ftk', name: 'FTK', category: 'forensics', img: 'assets/icons/ftk.png', url: 'https://www.exterro.com/digital-forensics-software/ftk' },
+        { id: 'binwalk', name: 'BINWALK', category: 'forensics', img: 'assets/icons/binwalk.svg', url: 'https://github.com/ReFirmLabs/binwalk' },
+        { id: 'exiftool', name: 'EXIFTOOL', category: 'forensics', img: 'assets/icons/ExifTool_logo.svg', url: 'https://exiftool.org/' },
+        // Malware Analysis
+        { id: 'ghidra', name: 'GHIDRA', category: 'malware', img: 'assets/icons/ghidra.png', url: 'https://ghidra-sre.org/' },
+        { id: 'binaryninja', name: 'BINARY NINJA', category: 'malware', img: 'assets/icons/binary-ninja.png', url: 'https://binary.ninja/' },
+        { id: 'die', name: 'DETECT IT EASY', category: 'malware', img: 'assets/icons/detect-it-easy-logo.svg', url: 'https://github.com/horsicq/Detect-It-Easy' },
+        // Cryptography
+        { id: 'openssl', name: 'OPENSSL', category: 'crypto', img: 'assets/icons/OpenSSL_logo.svg.png', url: 'https://www.openssl.org/' },
+        { id: 'cyberchef', name: 'CYBERCHEF', category: 'crypto', img: 'https://gchq.github.io/CyberChef/images/cyberchef-128x128.png', url: 'https://gchq.github.io/CyberChef/' },
+        // Network Security
+        { id: 'tcpdump', name: 'TCPDUMP', category: 'network', img: 'https://www.tcpdump.org/images/logo.png', url: 'https://www.tcpdump.org/' },
+        { id: 'zeek', name: 'ZEEK', category: 'network', img: 'https://zeek.org/wp-content/uploads/2019/09/logo.png', url: 'https://zeek.org/' },
+        { id: 'snort', name: 'SNORT', category: 'network', img: 'assets/icons/snort.png', url: 'https://www.snort.org/' }
+      ],
+      links: [
+        // Language to tools
+        { source: 'python', target: 'metasploit' },
+        { source: 'python', target: 'sqlmap' },
+        { source: 'python', target: 'volatility' },
+        { source: 'bash', target: 'nmap' },
+        { source: 'bash', target: 'hydra' },
+        { source: 'bash', target: 'gobuster' },
+        // Pentest workflows
+        { source: 'nmap', target: 'rustscan' },
+        { source: 'nmap', target: 'metasploit' },
+        { source: 'burp', target: 'sqlmap' },
+        { source: 'burp', target: 'ffuf' },
+        { source: 'wireshark', target: 'tcpdump' },
+        { source: 'john', target: 'hashcat' },
+        { source: 'ffuf', target: 'gobuster' },
+        // Forensics workflows
+        { source: 'autopsy', target: 'volatility' },
+        { source: 'volatility', target: 'binwalk' },
+        { source: 'binwalk', target: 'exiftool' },
+        { source: 'ftk', target: 'autopsy' },
+        // Malware analysis workflows
+        { source: 'ghidra', target: 'binaryninja' },
+        { source: 'die', target: 'ghidra' },
+        { source: 'binwalk', target: 'ghidra' },
+        // Crypto workflows
+        { source: 'openssl', target: 'cyberchef' },
+        // Network security workflows
+        { source: 'tcpdump', target: 'wireshark' },
+        { source: 'zeek', target: 'wireshark' },
+        { source: 'snort', target: 'wireshark' },
+        { source: 'wireshark', target: 'nmap' }
+      ]
+    };
+
+    let simulation;
+
+    function initGraph() {
+      const container = document.getElementById('graph-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      const svg = d3.select('#graph-svg')
+        .attr('width', width)
+        .attr('height', height);
+
+      svg.selectAll('*').remove();
+
+      // Create a group for zoom/pan
+      const g = svg.append('g');
+
+      // Add zoom behavior
+      const zoom = d3.zoom()
+        .scaleExtent([0.1, 4])
+        .on('zoom', (event) => {
+          g.attr('transform', event.transform);
+        });
+
+      svg.call(zoom);
+
+      // Create arrow markers for links
+      svg.append('defs').selectAll('marker')
+        .data(['end'])
+        .enter().append('marker')
+        .attr('id', 'arrowhead')
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 35)
+        .attr('refY', 0)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('d', 'M0,-5L10,0L0,5')
+        .attr('fill', '#a855f7')
+        .attr('opacity', 0.6);
+
+      // Create force simulation
+      simulation = d3.forceSimulation(skillsData.nodes)
+        .force('link', d3.forceLink(skillsData.links).id(d => d.id).distance(150))
+        .force('charge', d3.forceManyBody().strength(-500))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(50));
+
+      // Create links
+      const link = g.append('g')
+        .selectAll('line')
+        .data(skillsData.links)
+        .enter().append('line')
+        .attr('class', 'link-line')
+        .attr('marker-end', 'url(#arrowhead)');
+
+      // Create nodes group
+      const node = g.append('g')
+        .selectAll('g')
+        .data(skillsData.nodes)
+        .enter().append('g')
+        .call(d3.drag()
+          .on('start', dragstarted)
+          .on('drag', dragged)
+          .on('end', dragended))
+        .on('click', (event, d) => {
+          event.stopPropagation();
+          // Only open link if not dragging
+          if (!event.defaultPrevented) {
+            window.open(d.url, '_blank');
+          }
+        });
+
+      // Add circles
+      node.append('circle')
+        .attr('class', 'node-circle')
+        .attr('r', 30)
+        .attr('fill', d => getCategoryColor(d.category));
+
+      // Add images
+      node.append('image')
+        .attr('class', 'node-image')
+        .attr('xlink:href', d => d.img)
+        .attr('x', -20)
+        .attr('y', -20)
+        .attr('width', 40)
+        .attr('height', 40);
+
+      // Add labels
+      node.append('text')
+        .attr('class', 'node-label')
+        .attr('dy', 45)
+        .text(d => d.name);
+
+      // Update positions on tick
+      simulation.on('tick', () => {
+        link
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+
+        node.attr('transform', d => `translate(${d.x},${d.y})`);
+      });
+    }
+
+    function getCategoryColor(category) {
+      const colors = {
+        'languages': 'rgba(168, 85, 247, 0.8)',
+        'pentest': 'rgba(239, 68, 68, 0.8)',
+        'forensics': 'rgba(59, 130, 246, 0.8)',
+        'malware': 'rgba(245, 158, 11, 0.8)',
+        'crypto': 'rgba(16, 185, 129, 0.8)',
+        'network': 'rgba(236, 72, 153, 0.8)'
+      };
+      return colors[category] || 'rgba(168, 85, 247, 0.8)';
+    }
+
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+      // Prevent triggering zoom/pan while dragging a node
+      event.sourceEvent.stopPropagation();
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+      // Prevent click event after dragging
+      event.sourceEvent.preventDefault();
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      // Keep node fixed at dropped position
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    // Initialize on load
+    window.addEventListener('load', initGraph);
+    window.addEventListener('resize', initGraph);
+  </script>
+</body>
+</html>

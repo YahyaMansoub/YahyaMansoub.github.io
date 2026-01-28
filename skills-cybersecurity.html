@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cybersecurity Skills — Yahya Mansoub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root { --primary: #a855f7; --text: #d9ffe7; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #0a0a1e;
+      color: var(--text);
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    
+    .pixel { 
+      image-rendering: pixelated; 
+      image-rendering: crisp-edges; 
+    }
+
+    /* Background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      background: url("assets/cyber1.gif") center/cover no-repeat;
+      opacity: 0.6;
+    }
+
+    .tint {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: linear-gradient(180deg, rgba(10,10,30,0.5), rgba(10,10,30,0.8));
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      mix-blend-mode: multiply;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Left Sidebar Navigation */
+    .nav-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.85);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      user-select: none;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(0,0,0,0.95);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .nav-toggle-line {
+      width: 28px;
+      height: 3px;
+      background: var(--primary);
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .sidebar-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      background: rgba(10,10,30,0.98);
+      border-right: 2px solid var(--primary);
+      padding: 90px 20px 20px;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(.18,.9,.2,1);
+      backdrop-filter: blur(16px);
+      overflow-y: auto;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+
+    .sidebar-nav.active {
+      transform: translateX(0);
+    }
+
+    .sidebar-nav-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(0,0,0,0.45);
+      border: 2px solid rgba(168, 85, 247, 0.2);
+      border-radius: 10px;
+      font-size: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.15), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .nav-link:hover {
+      background: rgba(168, 85, 247, 0.1);
+      border-color: var(--primary);
+      transform: translateX(8px);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+    }
+
+    .nav-link img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0.95);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Legacy nav-link styles - Removed */
+    .legacy-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.5);
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background: rgba(168, 85, 247, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .nav-link img {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 30px 60px 30px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+      margin-bottom: 50px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary); }
+      to { text-shadow: 0 0 30px var(--primary), 0 0 60px var(--primary); }
+    }
+
+    /* Section Title */
+    .section-title {
+      font-size: 24px;
+      color: var(--primary);
+      text-shadow: 0 0 15px var(--primary);
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    /* Language Path */
+    .lang-tree {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 80px;
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .lang-row {
+      display: contents;
+    }
+
+    .lang-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: #fff;
+      position: relative;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+    }
+
+    .lang-btn::after {
+      content: '';
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+      opacity: 0.4;
+      transform: translateY(-50%);
+    }
+
+    .lang-btn:last-child::after {
+      display: none;
+    }
+
+    .lang-btn:hover {
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 0 15px 40px var(--primary);
+      background: rgba(168, 85, 247, 0.3);
+    }
+
+    .lang-logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 5px var(--primary));
+    }
+
+    .lang-name {
+      font-size: 10px;
+      text-align: center;
+      color: var(--primary);
+      text-shadow: 0 0 5px var(--primary);
+    }
+
+    /* Back Button */
+    .back-btn {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      padding: 15px 25px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      background: rgba(168, 85, 247, 0.3);
+      transform: translateX(5px);
+    }
+
+    /* View Graph Button */
+    .graph-btn {
+      display: inline-block;
+      margin: 30px auto;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 3px solid var(--primary);
+      border-radius: 12px;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+      text-align: center;
+    }
+
+    .graph-btn:hover {
+      background: rgba(168, 85, 247, 0.3);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 40px var(--primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 20px;
+      }
+
+      .section {
+        padding: 25px;
+      }
+
+      .section-title {
+        font-size: 16px;
+      }
+
+      .lang-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 15px;
+      }
+
+      .lang-logo {
+        width: 50px;
+        height: 50px;
+      }
+
+      .lang-name {
+        font-size: 9px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <div class="bg"></div>
+  <div class="tint"></div>
+  <div class="scanlines"></div>
+
+  <!-- Sidebar Navigation Toggle (Hamburger) -->
+  <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleNav()"></div>
+
+  <!-- Left Sidebar Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="sidebar-nav-inner">
+      <a class="nav-link" href="index.html">
+        <img class="pixel" src="assets/icons/home.gif" alt="">
+        <span>HOME</span>
+      </a>
+      <a class="nav-link" href="skills.html">
+        <img class="pixel" src="assets/icons/star.gif" alt="">
+        <span>SKILLS</span>
+      </a>
+      <a class="nav-link" href="professional-experience.html">
+        <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
+        <span>PROFESSIONAL EXPERIENCE</span>
+      </a>
+      <a class="nav-link" href="leadership-activities.html">
+        <img class="pixel" src="assets/icons/LandC.gif" alt="">
+        <span>LEADERSHIP & ACTIVITIES</span>
+      </a>
+      <a class="nav-link" href="projects.html">
+        <img class="pixel" src="assets/icons/projects.png" alt="">
+        <span>PROJECTS</span>
+      </a>
+      <a class="nav-link" href="ctf.html">
+        <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
+        <span>CTF</span>
+      </a>
+      <a class="nav-link" href="profile.html">
+        <img class="pixel" src="assets/icons/profile.png" alt="">
+        <span>PROFILE</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Back Button -->
+  <a href="skills.html?from=cybersecurity" class="back-btn">BACK ▶</a>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1 class="page-title">CYBERSECURITY SKILLS</h1>
+
+    <!-- View Graph Button -->
+    <div style="text-align: center; margin-bottom: 60px;">
+      <a href="skills-cybersecurity-graph.html" class="graph-btn">
+        <img src="assets/icons/knowledge-graph.png" alt="Graph" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 10px;">
+        GRAPH VIEW
+      </a>
+    </div>
+
+    <h2 class="section-title">PROGRAMMING LANGUAGES</h2>
+
+    <div class="lang-tree">
+      <div class="lang-row">
+        
+        <a href="https://www.python.org/" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="lang-logo">
+          <span class="lang-name">PYTHON</span>
+        </a>
+
+        <a href="https://en.cppreference.com/w/c" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" alt="C" class="lang-logo">
+          <span class="lang-name">C</span>
+        </a>
+
+        <a href="https://en.cppreference.com/w/" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++" class="lang-logo">
+          <span class="lang-name">C++</span>
+        </a>
+
+        <a href="https://www.java.com/" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java" class="lang-logo">
+          <span class="lang-name">JAVA</span>
+        </a>
+
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="lang-logo">
+          <span class="lang-name">JAVASCRIPT</span>
+        </a>
+
+        <a href="https://go.dev/" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="Go" class="lang-logo">
+          <span class="lang-name">GO</span>
+        </a>
+
+        <a href="https://www.gnu.org/software/bash/" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="Bash" class="lang-logo">
+          <span class="lang-name">BASH</span>
+        </a>
+
+        <a href="https://learn.microsoft.com/en-us/powershell/" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/powershell/powershell-original.svg" alt="PowerShell" class="lang-logo">
+          <span class="lang-name">POWERSHELL</span>
+        </a>
+
+        <a href="https://learn.microsoft.com/en-us/dotnet/csharp/" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="C#" class="lang-logo">
+          <span class="lang-name">C#</span>
+        </a>
+
+        <a href="https://www.rust-lang.org/" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg" alt="Rust" class="lang-logo">
+          <span class="lang-name">RUST</span>
+        </a>
+      </div>
+    </div>
+
+    <h2 class="section-title">PENETRATION TESTING</h2>
+
+    <div class="lang-tree">
+      <div class="lang-row">
+        
+        <a href="https://nmap.org/" target="_blank" class="lang-btn">
+          <img src="https://nmap.org/images/nmap-logo-256x256.png" alt="Nmap" class="lang-logo">
+          <span class="lang-name">NMAP</span>
+        </a>
+
+        <a href="https://www.metasploit.com/" target="_blank" class="lang-btn">
+          <img src="https://www.wavetel.fr/wp-content/uploads/2015/12/RAPID7-METASPLOIT-Test-dintrusion.png" alt="Metasploit" class="lang-logo">
+          <span class="lang-name">METASPLOIT</span>
+        </a>
+
+        <a href="https://portswigger.net/burp" target="_blank" class="lang-btn">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/BurpSuite_Comunity_Edition.svg/2008px-BurpSuite_Comunity_Edition.svg.png" alt="Burp Suite" class="lang-logo">
+          <span class="lang-name">BURP SUITE</span>
+        </a>
+
+        <a href="https://www.kali.org/tools/hydra/" target="_blank" class="lang-btn">
+          <img src="https://www.kali.org/tools/hydra/images/hydra-logo.svg" alt="Hydra" class="lang-logo">
+          <span class="lang-name">HYDRA</span>
+        </a>
+
+        <a href="https://www.wireshark.org/" target="_blank" class="lang-btn">
+          <img src="https://www.wireshark.org/_astro/wireshark-logo-big.CkRjSOaC_2eT4Ah.png" alt="Wireshark" class="lang-logo">
+          <span class="lang-name">WIRESHARK</span>
+        </a>
+
+        <a href="https://sqlmap.org/" target="_blank" class="lang-btn">
+          <img src="assets/icons/sql-map-logo.png" alt="SQLMap" class="lang-logo">
+          <span class="lang-name">SQLMAP</span>
+        </a>
+
+        <a href="https://www.openwall.com/john/" target="_blank" class="lang-btn">
+          <img src="https://www.openwall.com/logo.png" alt="John the Ripper" class="lang-logo" style="background: white; padding: 5px; border-radius: 8px;">
+          <span class="lang-name">JOHN</span>
+        </a>
+
+        <a href="https://hashcat.net/hashcat/" target="_blank" class="lang-btn">
+          <img src="https://hashcat.net/s/i/hashcat-icon.png" alt="Hashcat" class="lang-logo">
+          <span class="lang-name">HASHCAT</span>
+        </a>
+
+        <a href="https://www.kali.org/tools/gobuster/" target="_blank" class="lang-btn">
+          <img src="assets/icons/gobuster-logo.svg" alt="Gobuster" class="lang-logo">
+          <span class="lang-name">GOBUSTER</span>
+        </a>
+
+        <a href="https://github.com/fortra/impacket" target="_blank" class="lang-btn">
+          <img src="assets/icons/impacket.jpg" alt="Impacket" class="lang-logo">
+          <span class="lang-name">IMPACKET</span>
+        </a>
+
+        <a href="https://github.com/RustScan/RustScan" target="_blank" class="lang-btn">
+          <img src="assets/icons/rustscan.png" alt="RustScan" class="lang-logo">
+          <span class="lang-name">RUSTSCAN</span>
+        </a>
+
+        <a href="https://github.com/ffuf/ffuf" target="_blank" class="lang-btn">
+          <img src="assets/icons/ffuf.png" alt="ffuf" class="lang-logo">
+          <span class="lang-name">FFUF</span>
+        </a>
+
+      </div>
+    </div>
+
+    <h2 class="section-title">DIGITAL FORENSICS (DFIR)</h2>
+
+    <div class="lang-tree">
+      <div class="lang-row">
+        
+        <a href="https://www.autopsy.com/" target="_blank" class="lang-btn">
+          <img src="assets/icons/autopsy.png" alt="Autopsy" class="lang-logo">
+          <span class="lang-name">AUTOPSY</span>
+        </a>
+
+        <a href="https://www.sleuthkit.org/" target="_blank" class="lang-btn">
+          <img src="assets/icons/sleuthkit.jpg" alt="The Sleuth Kit" class="lang-logo">
+          <span class="lang-name">SLEUTH KIT</span>
+        </a>
+
+        <a href="https://www.volatilityfoundation.org/" target="_blank" class="lang-btn">
+          <img src="assets/icons/volatility.png" alt="Volatility" class="lang-logo">
+          <span class="lang-name">VOLATILITY</span>
+        </a>
+
+        <a href="https://www.exterro.com/digital-forensics-software/ftk" target="_blank" class="lang-btn">
+          <img src="assets/icons/ftk.png" alt="FTK" class="lang-logo">
+          <span class="lang-name">FTK</span>
+        </a>
+
+        <a href="https://github.com/ReFirmLabs/binwalk" target="_blank" class="lang-btn">
+          <img src="assets/icons/binwalk.svg" alt="Binwalk" class="lang-logo">
+          <span class="lang-name">BINWALK</span>
+        </a>
+
+        <a href="https://exiftool.org/" target="_blank" class="lang-btn">
+          <img src="assets/icons/ExifTool_logo.svg" alt="ExifTool" class="lang-logo">
+          <span class="lang-name">EXIFTOOL</span>
+        </a>
+
+        <a href="http://foremost.sourceforge.net/" target="_blank" class="lang-btn">
+          <img src="assets/icons/kali-foremost.png" alt="Foremost" class="lang-logo">
+          <span class="lang-name">FOREMOST</span>
+        </a>
+
+        <a href="https://github.com/sleuthkit/scalpel" target="_blank" class="lang-btn">
+          <img src="assets/icons/scalpel-logo.svg" alt="Scalpel" class="lang-logo">
+          <span class="lang-name">SCALPEL</span>
+        </a>
+
+        <a href="https://ericzimmerman.github.io/" target="_blank" class="lang-btn">
+          <img src="assets/icons/EZTools.jpg" alt="EZ Tools" class="lang-logo">
+          <span class="lang-name">EZ TOOLS</span>
+        </a>
+
+      </div>
+    </div>
+
+    <h2 class="section-title">MALWARE ANALYSIS</h2>
+
+    <div class="lang-tree">
+      <div class="lang-row">
+        
+        <a href="https://ghidra-sre.org/" target="_blank" class="lang-btn">
+          <img src="assets/icons/ghidra.png" alt="Ghidra" class="lang-logo">
+          <span class="lang-name">GHIDRA</span>
+        </a>
+
+        <a href="https://binary.ninja/" target="_blank" class="lang-btn">
+          <img src="assets/icons/binary-ninja.png" alt="Binary Ninja" class="lang-logo">
+          <span class="lang-name">BINARY NINJA</span>
+        </a>
+
+        <a href="https://github.com/horsicq/Detect-It-Easy" target="_blank" class="lang-btn">
+          <img src="assets/icons/detect-it-easy-logo.svg" alt="Detect It Easy" class="lang-logo">
+          <span class="lang-name">DETECT IT EASY</span>
+        </a>
+
+      </div>
+    </div>
+
+    <h2 class="section-title">CRYPTOGRAPHY</h2>
+
+    <div class="lang-tree">
+      <div class="lang-row">
+        
+        <a href="https://www.openssl.org/" target="_blank" class="lang-btn">
+          <img src="assets/icons/OpenSSL_logo.svg.png" alt="OpenSSL" class="lang-logo">
+          <span class="lang-name">OPENSSL</span>
+        </a>
+
+        <a href="https://github.com/RsaCtfTool/RsaCtfTool" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="RsaCtfTool" class="lang-logo">
+          <span class="lang-name">RSACTFTOOL</span>
+        </a>
+
+        <a href="https://gchq.github.io/CyberChef/" target="_blank" class="lang-btn">
+          <img src="https://gchq.github.io/CyberChef/images/cyberchef-128x128.png" alt="CyberChef" class="lang-logo">
+          <span class="lang-name">CYBERCHEF</span>
+        </a>
+
+        <a href="https://github.com/hellman/xortool" target="_blank" class="lang-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="xortool" class="lang-logo">
+          <span class="lang-name">XORTOOL</span>
+        </a>
+
+        <a href="https://github.com/d3v1l401/FindCrypt-Ghidra" target="_blank" class="lang-btn">
+          <img src="https://ghidra-sre.org/images/GHIDRA_1.png" alt="FindCrypt" class="lang-logo">
+          <span class="lang-name">FINDCRYPT</span>
+        </a>
+
+      </div>
+    </div>
+
+    <h2 class="section-title">NETWORK SECURITY</h2>
+
+    <div class="lang-tree">
+      <div class="lang-row">
+        
+        <a href="https://www.tcpdump.org/" target="_blank" class="lang-btn">
+          <img src="https://www.tcpdump.org/images/logo.png" alt="tcpdump" class="lang-logo" style="background: white; padding: 5px; border-radius: 8px;">
+          <span class="lang-name">TCPDUMP</span>
+        </a>
+
+        <a href="https://www.netresec.com/?page=NetworkMiner" target="_blank" class="lang-btn">
+          <img src="https://www.netresec.com/images/NetworkMiner_logo_200x200.png" alt="NetworkMiner" class="lang-logo">
+          <span class="lang-name">NETWORKMINER</span>
+        </a>
+
+        <a href="https://zeek.org/" target="_blank" class="lang-btn">
+          <img src="https://zeek.org/wp-content/uploads/2019/09/logo.png" alt="Zeek" class="lang-logo">
+          <span class="lang-name">ZEEK</span>
+        </a>
+
+        <a href="https://www.snort.org/" target="_blank" class="lang-btn">
+          <img src="assets/icons/snort.png" alt="Snort" class="lang-logo">
+          <span class="lang-name">SNORT</span>
+        </a>
+
+        <a href="https://www.bettercap.org/" target="_blank" class="lang-btn">
+          <img src="https://www.bettercap.org/logo.png" alt="Bettercap" class="lang-logo">
+          <span class="lang-name">BETTERCAP</span>
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function toggleNav() {
+      const sidebar = document.getElementById('sidebarNav');
+      const overlay = document.getElementById('sidebarOverlay');
+      const toggle = document.getElementById('navToggle');
+      
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      toggle.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

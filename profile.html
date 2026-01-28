@@ -1,0 +1,1499 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile — Yahya Mansoub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --green: #35ff7a;
+      --text: #d9ffe7;
+      --cyan: #00d9ff;
+      --purple: #a855f7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+    body{
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #06110b;
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    .pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+    /* Animations */
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-80px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: url("assets/profile_bg.gif") center center / cover no-repeat;
+    }
+    .tint{
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(1100px 650px at 50% 30%, rgba(53,255,122,0.08), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,0.50), rgba(0,0,0,0.75));
+    }
+    .scanlines{
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      opacity: 0.40;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 80px 28px;
+    }
+
+    /* Left Sidebar Navigation */
+    .nav-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.85);
+      border: 2px solid rgba(53,255,122,0.3);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      user-select: none;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(0,0,0,0.95);
+      border-color: rgba(53,255,122,0.6);
+      transform: scale(1.05);
+    }
+
+    .nav-toggle-line {
+      width: 28px;
+      height: 3px;
+      background: var(--green);
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .sidebar-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      background: rgba(6,17,11,0.98);
+      border-right: 2px solid rgba(53,255,122,0.2);
+      padding: 90px 20px 20px;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(.18,.9,.2,1);
+      backdrop-filter: blur(16px);
+      overflow-y: auto;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+
+    .sidebar-nav.show {
+      transform: translateX(0);
+    }
+
+    .sidebar-nav-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(0,0,0,0.45);
+      border: 2px solid rgba(53,255,122,0.15);
+      border-radius: 10px;
+      font-size: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(53,255,122,0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .nav-link:hover {
+      background: rgba(53,255,122,0.08);
+      border-color: rgba(53,255,122,0.4);
+      transform: translateX(8px);
+      box-shadow: 0 4px 12px rgba(53,255,122,0.2);
+    }
+
+    .nav-link img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0.95);
+    }
+
+    /* Sidebar overlay */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Loading Overlay Styles */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(6, 17, 11, 0.98);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .loading-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .loader {
+      width: 560px;
+      max-width: 90%;
+      background: rgba(0,0,0,0.7);
+      border: 2px solid #35ff7a;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(53,255,122,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .loader-title {
+      font-size: 20px;
+      color: #35ff7a;
+      font-weight: bold;
+      letter-spacing: 3px;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(53,255,122,0.5);
+    }
+
+    .runner {
+      position: relative;
+      width: 180px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .runner img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(53,255,122,0.4));
+    }
+
+    .bar {
+      width: 100%;
+      height: 20px;
+      background: rgba(0,0,0,0.5);
+      border: 2px solid #35ff7a;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #35ff7a, #2dd968);
+      width: 0%;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 15px rgba(53,255,122,0.6);
+    }
+
+    .loader-hint {
+      font-size: 14px;
+      color: rgba(53,255,122,0.8);
+      letter-spacing: 1px;
+    }
+
+    /* Header Section */
+    .profile-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 50px;
+      margin-bottom: 80px;
+      flex-direction: row-reverse;
+    }
+
+    .profile-pic {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      border: 4px solid var(--green);
+      object-fit: cover;
+      box-shadow: 0 20px 60px rgba(53,255,122,0.35);
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translateX(100px);
+      transition: all 1s ease-out;
+    }
+
+    .profile-pic.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .profile-info {
+      flex: 1;
+      padding-top: 40px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1s ease-out 0.3s;
+    }
+
+    .profile-info.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Platform Links */
+    .platform-links {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease-out 0.6s;
+    }
+
+    .platform-links.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .platform-link {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 8px;
+      opacity: 0;
+      transform: translateY(30px) scale(0.8);
+      animation: none;
+    }
+
+    .platform-links.visible .platform-link {
+      animation: popIn 0.5s ease-out forwards;
+    }
+
+    .platform-links.visible .platform-link:nth-child(1) { animation-delay: 0.1s; }
+    .platform-links.visible .platform-link:nth-child(2) { animation-delay: 0.2s; }
+    .platform-links.visible .platform-link:nth-child(3) { animation-delay: 0.3s; }
+    .platform-links.visible .platform-link:nth-child(4) { animation-delay: 0.4s; }
+    .platform-links.visible .platform-link:nth-child(5) { animation-delay: 0.5s; }
+    .platform-links.visible .platform-link:nth-child(6) { animation-delay: 0.6s; }
+    .platform-links.visible .platform-link:nth-child(7) { animation-delay: 0.7s; }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.8);
+      }
+      60% {
+        transform: translateY(-5px) scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .platform-link:hover {
+      transform: translateY(-5px) scale(1.1) !important;
+      filter: brightness(1.2) drop-shadow(0 5px 15px rgba(53,255,122,0.4));
+      background: rgba(255,255,255,0.1);
+    }
+
+    .platform-link img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .platform-link img[alt="GitHub"] {
+      filter: invert(1) brightness(1.2);
+    }
+
+    .profile-name {
+      font-size: 32px;
+      color: var(--green);
+      margin-bottom: 18px;
+      text-shadow: 0 0 25px rgba(53,255,122,0.50);
+      line-height: 1.3;
+    }
+
+    .profile-title {
+      font-size: 14px;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
+
+    .profile-focus {
+      font-size: 11px;
+      color: var(--text);
+      opacity: 0.85;
+      line-height: 1.9;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 80px;
+      padding-top: 80px;
+      position: relative;
+    }
+
+    .section:first-of-type {
+      padding-top: 0;
+    }
+
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(53,255,122,0.3) 20%, rgba(53,255,122,0.5) 50%, rgba(53,255,122,0.3) 80%, transparent);
+    }
+
+    .section:first-of-type::before {
+      display: none;
+    }
+
+    .section-title {
+      font-size: 24px;
+      color: var(--green);
+      margin-bottom: 50px;
+      text-shadow: 0 0 25px rgba(53,255,122,0.40);
+      letter-spacing: 1px;
+    }
+
+    /* Experience Card System - Horizontal Scroll Layout */
+    .exp-container {
+      margin: 60px 0;
+    }
+
+    .exp-cards-wrapper {
+      display: flex;
+      gap: 30px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding: 20px 0;
+      margin-bottom: 40px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(53,255,122,0.4) rgba(0,0,0,0.2);
+    }
+
+    .exp-cards-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .exp-cards-wrapper::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+    }
+
+    .exp-cards-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(53,255,122,0.4);
+      border-radius: 10px;
+    }
+
+    .exp-cards-wrapper::-webkit-scrollbar-thumb:hover {
+      background: rgba(53,255,122,0.6);
+    }
+
+    .exp-card {
+      min-width: 320px;
+      border: 2px solid rgba(53,255,122,0.35);
+      background: rgba(0,0,0,0.65);
+      border-radius: 18px;
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(12px);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .exp-card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(53,255,122,0.7);
+      box-shadow: 0 20px 60px rgba(53,255,122,0.4);
+      background: rgba(0,0,0,0.8);
+    }
+
+    .exp-tag {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 6px 12px;
+      background: rgba(0,217,255,0.2);
+      border: 1px solid rgba(0,217,255,0.5);
+      border-radius: 8px;
+      font-size: 9px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .exp-button-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .exp-button {
+      padding: 16px 32px;
+      background: rgba(53,255,122,0.15);
+      border: 2px solid rgba(53,255,122,0.4);
+      border-radius: 14px;
+      color: var(--green);
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .exp-button-icon {
+      width: 24px;
+      height: 24px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .exp-button:hover {
+      background: rgba(53,255,122,0.3);
+      border-color: rgba(53,255,122,0.6);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(53,255,122,0.3);
+    }
+
+    .exp-button-text {
+      font-size: 12px;
+      color: var(--text);
+      opacity: 0.7;
+    }
+
+    .exp-logo-small {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 18px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .exp-card:hover .exp-logo-small {
+      transform: scale(1.1);
+    }
+
+    .exp-role-small {
+      font-size: 13px;
+      color: var(--cyan);
+      margin-bottom: 10px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .exp-company-small {
+      font-size: 11px;
+      color: var(--text);
+      opacity: 0.88;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .exp-date-small {
+      font-size: 10px;
+      color: var(--purple);
+      opacity: 0.8;
+      text-align: center;
+    }
+
+    /* Fullscreen Modal */
+    .exp-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.95);
+      z-index: 9999;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      overflow-y: auto;
+      backdrop-filter: blur(10px);
+    }
+
+    .exp-modal.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .exp-modal-content {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 40px;
+      background: rgba(0,0,0,0.7);
+      border: 2px solid rgba(53,255,122,0.4);
+      border-radius: 20px;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.4s ease;
+    }
+
+    .exp-modal.active .exp-modal-content {
+      transform: scale(1);
+    }
+
+    .exp-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255,0,0,0.3);
+      border: 2px solid rgba(255,0,0,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 24px;
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+
+    .exp-close:hover {
+      background: rgba(255,0,0,0.5);
+      transform: rotate(90deg);
+    }
+
+    .exp-modal-header {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(53,255,122,0.3);
+    }
+
+    .exp-logo {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+    }
+
+    .exp-logo.gep {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .exp-summary {
+      flex: 1;
+    }
+
+    .exp-role {
+      font-size: 20px;
+      color: var(--cyan);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .exp-company {
+      font-size: 16px;
+      color: var(--text);
+      opacity: 0.90;
+      margin-bottom: 10px;
+    }
+
+    .exp-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--text);
+      opacity: 0.75;
+    }
+
+    .exp-description {
+      font-size: 13px;
+      color: var(--text);
+      opacity: 0.85;
+      line-height: 2;
+      margin-bottom: 25px;
+    }
+
+    .exp-description li {
+      margin-bottom: 15px;
+      position: relative;
+      padding-left: 25px;
+    }
+
+    .exp-description li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: var(--green);
+      font-size: 14px;
+    }
+
+    .exp-media {
+      margin-top: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .exp-media img,
+    .exp-media video {
+      width: 100%;
+      border-radius: 12px;
+      border: 2px solid rgba(53,255,122,0.3);
+    }
+
+    .exp-links {
+      margin-top: 25px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .exp-link {
+      padding: 12px 20px;
+      font-size: 11px;
+      background: rgba(53,255,122,0.15);
+      border: 2px solid rgba(53,255,122,0.4);
+      border-radius: 12px;
+      color: var(--cyan);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .exp-link:hover {
+      background: rgba(53,255,122,0.25);
+      border-color: rgba(53,255,122,0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Education Item */
+    .edu-item {
+      margin-bottom: 70px;
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      opacity: 0;
+      transform: translateX(-80px);
+      transition: all 0.8s ease-out;
+    }
+    .edu-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .edu-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .edu-item:nth-child(even) {
+      flex-direction: row-reverse;
+      transform: translateX(80px);
+    }
+
+    .edu-item:nth-child(even).visible {
+      transform: translateX(0);
+    }
+
+    .edu-logo {
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;
+      object-fit: contain;
+      border-radius: 0;
+      border: none;
+      padding: 0;
+      background: transparent;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+    }
+
+    .edu-logo:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    .edu-logo.um6p {
+      background: rgba(255,255,255,0.35);
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    .edu-content {
+      flex: 1;
+    }
+
+    .edu-degree {
+      font-size: 18px;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      line-height: 1.5;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out 0.2s both;
+    }
+
+    .edu-item.visible .edu-degree {
+      animation: fadeInUp 0.6s ease-out 0.3s both;
+    }
+
+    .edu-school {
+      font-size: 14px;
+      color: var(--text);
+      opacity: 0;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .edu-item.visible .edu-school {
+      animation: fadeInUp 0.6s ease-out 0.4s both;
+      opacity: 0.92;
+    }
+
+    .edu-location {
+      font-size: 12px;
+      color: var(--text);
+      opacity: 0;
+      margin-bottom: 8px;
+    }
+
+    .edu-item.visible .edu-location {
+      animation: fadeInUp 0.6s ease-out 0.5s both;
+      opacity: 0.80;
+    }
+
+    .edu-date {
+      font-size: 12px;
+      color: var(--purple);
+      opacity: 0;
+      margin-bottom: 16px;
+    }
+
+    .edu-item.visible .edu-date {
+      animation: fadeInUp 0.6s ease-out 0.6s both;
+      opacity: 0.85;
+    }
+
+    .edu-details {
+      font-size: 12px;
+      color: var(--text);
+      opacity: 0;
+      line-height: 2;
+      margin-left: 20px;
+    }
+
+    .edu-item.visible .edu-details {
+      animation: fadeInUp 0.6s ease-out 0.7s both;
+      opacity: 0.82;
+    }
+
+    /* Professional Experience Animations */
+    .exp-container {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .exp-container.visible {
+      animation: fadeInUp 0.8s ease-out both;
+    }
+
+    .exp-card {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    .exp-cards-wrapper.visible .exp-card:nth-child(1) {
+      animation: fadeInUp 0.6s ease-out 0.2s both, scaleIn 0.6s ease-out 0.2s both;
+    }
+
+    .exp-cards-wrapper.visible .exp-card:nth-child(2) {
+      animation: fadeInUp 0.6s ease-out 0.4s both, scaleIn 0.6s ease-out 0.4s both;
+    }
+
+    .exp-cards-wrapper.visible .exp-card:nth-child(3) {
+      animation: fadeInUp 0.6s ease-out 0.6s both, scaleIn 0.6s ease-out 0.6s both;
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.85);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .exp-button-wrapper {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .exp-button-wrapper.visible {
+      animation: fadeInUp 0.8s ease-out 0.8s both;
+    }
+
+    /* Leadership Item */
+    .lead-container {
+      margin-bottom: 40px;
+    }
+
+    .lead-item {
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: all 0.3s ease;
+    }
+
+    .lead-item:hover {
+      transform: translateX(10px);
+      padding-left: 15px;
+      border-left: 3px solid var(--cyan);
+    }
+
+    .lead-item.visible {
+      animation: slideInLeft 0.6s ease-out both;
+    }
+
+    .lead-item:nth-child(1).visible {
+      animation-delay: 0.1s;
+    }
+
+    .lead-item:nth-child(2).visible {
+      animation-delay: 0.3s;
+    }
+
+    .lead-item:nth-child(3).visible {
+      animation-delay: 0.5s;
+    }
+
+    .lead-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .lead-title {
+      font-size: 17px;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .lead-description {
+      font-size: 13px;
+      color: var(--text);
+      opacity: 0.87;
+      line-height: 2;
+    }
+
+    /* Leadership Button Wrapper */
+    .lead-button-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 50px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .lead-button-wrapper.visible {
+      animation: fadeInUp 0.8s ease-out 0.7s both;
+    }
+
+    .lead-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      padding: 18px 35px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 3px solid var(--cyan);
+      border-radius: 12px;
+      color: var(--cyan);
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+      text-align: center;
+    }
+
+    .lead-button:hover {
+      background: rgba(0, 217, 255, 0.2);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 40px var(--cyan);
+    }
+
+    .lead-button-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    .lead-button-text {
+      font-size: 10px;
+      color: var(--text);
+      opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 30px;
+      }
+
+      .profile-pic {
+        width: 200px;
+        height: 200px;
+      }
+
+      .profile-info {
+        padding-top: 0;
+      }
+
+      .profile-name {
+        font-size: 22px;
+      }
+
+      .section-title {
+        font-size: 18px;
+      }
+
+      .edu-item,
+      .edu-item:nth-child(even) {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .edu-logo {
+        width: 100px;
+        height: 100px;
+      }
+
+      .container {
+        padding: 80px 20px 40px;
+      }
+
+      .section {
+        margin-bottom: 60px;
+      }
+
+      .platform-links {
+        gap: 20px;
+      }
+
+      .platform-link {
+        width: 45px;
+        height: 45px;
+      }
+
+      .exp-container {
+        min-height: 700px;
+      }
+
+      .exp-orbit {
+        width: 500px;
+        height: 500px;
+      }
+
+      .exp-card {
+        width: 200px;
+        padding: 18px;
+      }
+
+      .exp-logo-small {
+        width: 55px;
+        height: 55px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg pixel" aria-hidden="true"></div>
+  <div class="tint" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- Back Button -->
+  <!-- Sidebar Navigation Toggle (Hamburger) -->
+  <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleNav()"></div>
+
+  <!-- Left Sidebar Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="sidebar-nav-inner">
+      <a class="nav-link" href="index.html">
+        <img class="pixel" src="assets/icons/home.gif" alt="">
+        <span>HOME</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('skills.html', 'LOADING SKILLS…')">
+        <img class="pixel" src="assets/icons/star.gif" alt="">
+        <span>SKILLS</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('professional-experience.html', 'LOADING EXPERIENCE…')">
+        <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
+        <span>PROFESSIONAL EXPERIENCE</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('leadership-activities.html', 'LOADING ACTIVITIES…')">
+        <img class="pixel" src="assets/icons/LandC.gif" alt="">
+        <span>LEADERSHIP & ACTIVITIES</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('projects.html', 'LOADING PROJECTS…')">
+        <img class="pixel" src="assets/icons/projects.png" alt="">
+        <span>PROJECTS</span>
+      </a>
+      <a class="nav-link" onclick="goToPage('ctf.html', 'LOADING CTF…')">
+        <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
+        <span>CTF</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <img src="assets/me.jpg" alt="Profile Picture" class="profile-pic pixel">
+      <div class="profile-info">
+        <h1 class="profile-name">YAHYA MANSOUB</h1>
+        <div class="profile-title">Computer Science Engineering Student</div>
+        <div class="profile-focus">Focus on the Intersection of Cybersecurity & Artificial Intelligence</div>
+      </div>
+    </div>
+
+    <!-- Platform Links -->
+    <div class="platform-links">
+      <a href="https://app.hackthebox.com/users/2234506" target="_blank" rel="noopener noreferrer" class="platform-link" title="HackTheBox">
+        <img src="assets/icons/hackthebox.png" alt="HackTheBox">
+      </a>
+      <a href="https://www.linkedin.com/in/yahya-mansoub-3903b3321/" target="_blank" rel="noopener noreferrer" class="platform-link" title="LinkedIn">
+        <img src="assets/icons/linkedin.png" alt="LinkedIn">
+      </a>
+      <a href="https://github.com/YahyaMansoub" target="_blank" rel="noopener noreferrer" class="platform-link" title="GitHub">
+        <img src="assets/icons/github.svg" alt="GitHub">
+      </a>
+      <a href="https://play.picoctf.org/users/Yahya_Man" target="_blank" rel="noopener noreferrer" class="platform-link" title="picoCTF">
+        <img src="assets/icons/picoctf.png" alt="picoCTF">
+      </a>
+      <a href="https://leetcode.com/u/Yahya_Mansoub/" target="_blank" rel="noopener noreferrer" class="platform-link" title="LeetCode">
+        <img src="assets/icons/LeetCode_logo_black.png" alt="LeetCode">
+      </a>
+      <a href="https://codeforces.com/profile/Yahya_Mansoub_Bermil" target="_blank" rel="noopener noreferrer" class="platform-link" title="Codeforces">
+        <img src="assets/icons/codeforces.webp" alt="Codeforces">
+      </a>
+      <a href="https://www.kaggle.com/yuri314ym" target="_blank" rel="noopener noreferrer" class="platform-link" title="Kaggle">
+        <img src="assets/icons/Kaggle_logo.png" alt="Kaggle">
+      </a>
+    </div>
+
+    <!-- Education -->
+    <div class="section">
+      <h2 class="section-title">EDUCATION</h2>
+      
+      <div class="edu-item">
+        <a href="https://cc.um6p.ma/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/um6p_cc_logo.png" alt="UM6P Logo" class="edu-logo um6p">
+        </a>
+        <div class="edu-content">
+          <div class="edu-degree">Computer Science Engineering</div>
+          <div class="edu-school">Mohammed VI Polytechnic University, College of Computing</div>
+          <div class="edu-location">Benguerir, Morocco</div>
+          <div class="edu-date">Since September 2024</div>
+        </div>
+      </div>
+
+      <div class="edu-item">
+        <a href="https://www.cpge.ac.ma/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/icons/cpge_mohamed_v_casablanca_logo.jpg" alt="Lycée Mohammed V Logo" class="edu-logo">
+        </a>
+        <div class="edu-content">
+          <div class="edu-degree">Preparatory Classes for Grandes Écoles (MP)</div>
+          <div class="edu-school">Lycée Mohammed V</div>
+          <div class="edu-location">Casablanca, Morocco</div>
+          <div class="edu-date">September 2023 - July 2024</div>
+          <div class="edu-details">
+            Second Year: Advanced Mathematics, Physics (MP program). Rank: (4/31)
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-item">
+        <a href="https://www.cpge.ac.ma/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/icons/classes_prepas_logo.jpg" alt="Lycée Al Khanssaa Logo" class="edu-logo">
+        </a>
+        <div class="edu-content">
+          <div class="edu-degree">Preparatory Classes for Grandes Écoles (MPSI)</div>
+          <div class="edu-school">Lycée Al Khanssaa</div>
+          <div class="edu-location">Casablanca, Morocco</div>
+          <div class="edu-date">September 2022 - July 2023</div>
+          <div class="edu-details">
+            First Year: Mathematics, Physics, Engineering Science (MPSI program). Rank: (2/31)
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-item">
+        <a href="https://groupecharif.com/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/icons/charif_al_idrissi.jpg" alt="High School Logo" class="edu-logo">
+        </a>
+        <div class="edu-content">
+          <div class="edu-degree">High School Diploma, Baccalauréat</div>
+          <div class="edu-school">Charif Al Idrissi</div>
+          <div class="edu-location">Casablanca, Morocco</div>
+          <div class="edu-date">2022</div>
+          <div class="edu-details">Graduated with Highest Honors</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Professional Experience -->
+    <div class="section">
+      <h2 class="section-title">PROFESSIONAL EXPERIENCE</h2>
+      
+      <div class="exp-container">
+        <div class="exp-cards-wrapper">
+          <!-- Experience Card 1: Green Energy Park -->
+          <a href="professional-experience.html#gep" class="exp-card">
+            <div class="exp-tag">Intern</div>
+            <img src="assets/logo_gep.png" alt="Green Energy Park" class="exp-logo-small gep">
+            <div class="exp-role-small">AI & Systems Development</div>
+            <div class="exp-company-small">Green Energy Park</div>
+            <div class="exp-date-small">Jun - Aug 2025</div>
+          </a>
+
+          <!-- Experience Card 2: UM6P & GEP -->
+          <a href="professional-experience.html#um6p-lca" class="exp-card">
+            <div class="exp-tag">Intern</div>
+            <img src="assets/um6p_cc_logo.png" alt="UM6P" class="exp-logo-small">
+            <div class="exp-role-small">Data Science & Modeling</div>
+            <div class="exp-company-small">UM6P & GEP</div>
+            <div class="exp-date-small">Feb - Jun 2025</div>
+          </a>
+
+          <!-- Experience Card 3: UM6P Research -->
+          <a href="professional-experience.html#um6p-research" class="exp-card">
+            <img src="assets/um6p_cc_logo.png" alt="UM6P" class="exp-logo-small">
+            <div class="exp-role-small">Cross-Domain Research</div>
+            <div class="exp-company-small">UM6P College</div>
+            <div class="exp-date-small">Since Sep 2025</div>
+          </a>
+        </div>
+
+        <div class="exp-button-wrapper">
+          <a href="index.html" 
+             class="exp-button"
+             onclick="sessionStorage.setItem('loadProExp', 'true');"
+             onmouseenter="this.querySelector('img').src='assets/icons/professional_experience.gif'"
+             onmouseleave="this.querySelector('img').src='assets/icons/professional_experience.gif'">
+            <img src="assets/icons/professional_experience.gif" alt="" class="exp-button-icon">
+            VIEW ALL
+          </a>
+          <span class="exp-button-text">To Know More</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leadership & Competition -->
+    <div class="section">
+      <h2 class="section-title">LEADERSHIP & COMPETITION</h2>
+      
+      <div class="lead-container">
+        <div class="lead-item">
+          <div class="lead-title">Moroccan Mathematical Competition (MMC)</div>
+          <div class="lead-description">
+            Selected as a national participant in both the 2023 (inaugural edition) and 2024 editions organized by Math&Maroc.
+          </div>
+        </div>
+
+        <div class="lead-item">
+          <div class="lead-title">ACM Cybersecurity Division (Member / Problem Setter)</div>
+          <div class="lead-description">
+            Placed 6th nationally in the NullHat CTF. Organized a local CTF, creating Forensics challenges and managing platform infrastructure.
+          </div>
+        </div>
+
+        <div class="lead-item">
+          <div class="lead-title">ForgeBots – IoT, Robotics & AI (Board Member / Project Manager)</div>
+          <div class="lead-description">
+            Coordinated technical projects. Developed and delivered year-long educational courses on IoT & AI concepts.
+          </div>
+        </div>
+
+        <div class="lead-button-wrapper">
+          <a href="#" class="lead-button" onclick="goToActivities(event)">
+            <img src="assets/icons/LandC.gif" alt="" class="lead-button-icon">
+            VIEW ALL ACTIVITIES
+          </a>
+          <span class="lead-button-text">Explore More Details</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Transition Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader">
+      <div class="loader-title" id="loaderTitle">LOADING ACTIVITIES…</div>
+      <div class="runner pixel">
+        <img class="pixel" src="assets/first_moving_right.gif" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="bar">
+        <div class="bar-fill" id="barFill"></div>
+      </div>
+      <div class="loader-hint">Please wait</div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle navigation sidebar
+    function toggleNav() {
+      const nav = document.getElementById('sidebarNav');
+      const toggle = document.getElementById('navToggle');
+      const overlay = document.getElementById('sidebarOverlay');
+      nav.classList.toggle('show');
+      toggle.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+
+    // Navigation with loading transition
+    function goToPage(dest, label) {
+      // Close sidebar before navigating
+      const nav = document.getElementById('sidebarNav');
+      const toggle = document.getElementById('navToggle');
+      const overlay = document.getElementById('sidebarOverlay');
+      nav.classList.remove('show');
+      toggle.classList.remove('open');
+      overlay.classList.remove('show');
+      
+      // Navigate after a short delay
+      setTimeout(() => {
+        window.location.href = dest;
+      }, 300);
+    }
+
+    // Activities button with loading animation
+    function goToActivities(event) {
+      event.preventDefault();
+      
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const barFill = document.getElementById('barFill');
+      
+      // Show loading overlay
+      loadingOverlay.classList.add('active');
+      
+      // Animate progress bar
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 100) progress = 100;
+        barFill.style.width = progress + '%';
+        
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            window.location.href = 'leadership-activities.html';
+          }, 200);
+        }
+      }, 80);
+    }
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        } else {
+          entry.target.classList.remove('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe profile elements
+    const profilePic = document.querySelector('.profile-pic');
+    const profileInfo = document.querySelector('.profile-info');
+    const platformLinks = document.querySelector('.platform-links');
+    if (profilePic) observer.observe(profilePic);
+    if (profileInfo) observer.observe(profileInfo);
+    if (platformLinks) observer.observe(platformLinks);
+
+    // Observe all education items
+    document.querySelectorAll('.edu-item').forEach(item => {
+      observer.observe(item);
+    });
+
+    // Observe professional experience elements
+    const expContainer = document.querySelector('.exp-container');
+    const expCardsWrapper = document.querySelector('.exp-cards-wrapper');
+    const expButtonWrapper = document.querySelector('.exp-button-wrapper');
+    if (expContainer) observer.observe(expContainer);
+    if (expCardsWrapper) observer.observe(expCardsWrapper);
+    if (expButtonWrapper) observer.observe(expButtonWrapper);
+
+    // Observe leadership items
+    document.querySelectorAll('.lead-item').forEach(item => {
+      observer.observe(item);
+    });
+    const leadButtonWrapper = document.querySelector('.lead-button-wrapper');
+    if (leadButtonWrapper) observer.observe(leadButtonWrapper);
+
+    // Cards now continuously orbit around the center like planets
+  </script>
+</body>
+</html>

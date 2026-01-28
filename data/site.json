@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "name": "Yahya Mansoub",
+    "tagline": "Computer Science Engineering Student (4th year) • Cybersecurity • AI/ML • Math",
+    "chips": ["CTF", "Reverse", "Pwn", "Crypto", "ML", "Research"]
+  },
+  "bootLog": [
+    "> init_portfolio --theme=green --mode=pixel",
+    "> load modules: [projects, writeups, research, contact]",
+    "> status: online"
+  ],
+  "stats": [
+    { "k": "ROLE", "v": "CS Engineering Student" },
+    { "k": "FOCUS", "v": "Cybersecurity + AI/ML" },
+    { "k": "PLAYGROUND", "v": "CTFs + Competitive Programming" }
+  ],
+  "stack": ["C/C++", "Python", "Go", "JS/TS", "Linux", "Docker"],
+  "links": {
+    "github": "https://github.com/yahyamansoub",
+    "linkedin": "",
+    "email": "mailto:"
+  },
+  "projects": [
+    {
+      "title": "Project Name",
+      "subtitle": "1-line description",
+      "tags": ["CTF", "Crypto"],
+      "status": "WIP",
+      "year": "2026",
+      "url": ""
+    }
+  ]
+}

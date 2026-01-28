@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leadership & Activities — Yahya Mansoub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #00d9ff;
+      --text: #d9ffe7;
+      --green: #35ff7a;
+      --purple: #a855f7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #0a0a1e;
+      color: var(--text);
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    
+    .pixel { 
+      image-rendering: pixelated; 
+      image-rendering: crisp-edges; 
+    }
+
+    /* Background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      background: url("assets/profile_bg.gif") center/cover no-repeat;
+      opacity: 0.4;
+    }
+
+    .tint {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: linear-gradient(180deg, rgba(10,10,30,0.7), rgba(10,10,30,0.9));
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      mix-blend-mode: multiply;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      height: 100%;
+      background: rgba(10, 10, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-right: 2px solid rgba(53, 255, 122, 0.5);
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-nav.active {
+      transform: translateX(0);
+    }
+
+    .sidebar-nav-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 80px 20px 30px 20px;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    /* Navigation Toggle (Hamburger) */
+    .nav-toggle {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid rgba(53, 255, 122, 0.5);
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-toggle:hover {
+      background: rgba(53, 255, 122, 0.2);
+      border-color: rgba(53, 255, 122, 0.8);
+    }
+
+    .nav-toggle-line {
+      width: 28px;
+      height: 3px;
+      background: rgba(53, 255, 122, 0.8);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+
+    /* Sidebar Overlay */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 20px;
+      border: 2px solid rgba(53, 255, 122, 0.3);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      color: rgba(53, 255, 122, 0.8);
+      text-decoration: none;
+      font-size: 10px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(53, 255, 122, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .nav-link:hover {
+      background: rgba(53, 255, 122, 0.2);
+      border-color: rgba(53, 255, 122, 0.6);
+      transform: translateX(8px);
+      color: #35ff7a;
+    }
+
+    .nav-link img {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Back Button */
+    .back-btn {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      padding: 15px 25px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 217, 255, 0.3);
+      transform: translateX(5px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 30px 60px 30px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+      margin-bottom: 60px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary); }
+      to { text-shadow: 0 0 30px var(--primary), 0 0 60px var(--primary); }
+    }
+
+    /* Activity Card */
+    .activity-card {
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid rgba(0, 217, 255, 0.4);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 40px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .activity-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, transparent, rgba(0, 217, 255, 0.3), transparent);
+      border-radius: 16px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .activity-card:hover::before {
+      opacity: 1;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 217, 255, 0.3);
+      border-color: rgba(0, 217, 255, 0.7);
+    }
+
+    .activity-card-header {
+      display: flex;
+      align-items: start;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .activity-card-content {
+      flex: 1;
+    }
+
+    .activity-title {
+      font-size: 24px;
+      color: var(--primary);
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px var(--primary);
+    }
+
+    .activity-logo {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Show only first 2 achievements in card preview */
+    .activity-card .activity-achievements li:nth-child(n+3) {
+      display: none;
+    }
+
+    .activity-card .activity-description {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .expand-hint {
+      font-size: 10px;
+      color: var(--primary);
+      text-align: center;
+      margin-top: 15px;
+      opacity: 0.7;
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: rgba(10, 10, 30, 0.95);
+      border: 3px solid rgba(0, 217, 255, 0.6);
+      border-radius: 20px;
+      padding: 50px;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 217, 255, 0.4);
+      animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 0, 0, 0.2);
+      border: 2px solid rgba(255, 0, 0, 0.5);
+      border-radius: 8px;
+      color: #ff4757;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 0, 0, 0.4);
+      transform: rotate(90deg);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: start;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .modal-logo {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+      flex-shrink: 0;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-title {
+      font-size: 28px;
+      color: var(--primary);
+      margin-bottom: 15px;
+      text-shadow: 0 0 15px var(--primary);
+    }
+
+    .modal .activity-role {
+      font-size: 16px;
+    }
+
+    .modal .activity-date {
+      font-size: 14px;
+    }
+
+    .modal .activity-description {
+      display: block;
+      -webkit-line-clamp: unset;
+      font-size: 14px;
+      line-height: 2.2;
+    }
+
+    .modal .activity-achievements {
+      margin-top: 30px;
+    }
+
+    .modal .activity-achievements li {
+      display: block;
+      font-size: 13px;
+      line-height: 2.2;
+      margin-bottom: 15px;
+    }
+
+    .activity-role {
+      font-size: 14px;
+      color: var(--green);
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+
+    .activity-date {
+      font-size: 12px;
+      color: var(--purple);
+      margin-bottom: 25px;
+      opacity: 0.85;
+    }
+
+    .activity-description {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 2;
+      opacity: 0.87;
+      margin-bottom: 20px;
+    }
+
+    .activity-achievements {
+      list-style: none;
+      padding: 0;
+    }
+
+    .activity-achievements li {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 2;
+      opacity: 0.82;
+      padding-left: 25px;
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .activity-achievements li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 20px;
+      }
+
+      .activity-card {
+        padding: 25px;
+      }
+
+      .activity-title {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Background -->
+  <div class="bg"></div>
+  <div class="tint"></div>
+  <div class="scanlines"></div>
+
+  <!-- Sidebar Navigation Toggle (Hamburger) -->
+  <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleNav()"></div>
+
+  <!-- Left Sidebar Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="sidebar-nav-inner">
+      <a class="nav-link" href="index.html">
+        <img class="pixel" src="assets/icons/home.gif" alt="">
+        <span>HOME</span>
+      </a>
+      <a class="nav-link" href="skills.html">
+        <img class="pixel" src="assets/icons/star.gif" alt="">
+        <span>SKILLS</span>
+      </a>
+      <a class="nav-link" href="professional-experience.html">
+        <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
+        <span>PROF EXPERIENCE</span>
+      </a>
+      <a class="nav-link" href="leadership-activities.html">
+        <img class="pixel" src="assets/icons/LandC.gif" alt="">
+        <span>LEADERSHIP & ACTIVITIES</span>
+      </a>
+      <a class="nav-link" href="projects.html">
+        <img class="pixel" src="assets/icons/projects.png" alt="">
+        <span>PROJECTS</span>
+      </a>
+      <a class="nav-link" href="ctf.html">
+        <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
+        <span>CTF</span>
+      </a>
+      <a class="nav-link" href="profile.html">
+        <img class="pixel" src="assets/icons/profile.png" alt="">
+        <span>PROFILE</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Back Button -->
+  <a href="profile.html" class="back-btn">BACK ▶</a>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1 class="page-title">LEADERSHIP & ACTIVITIES</h1>
+
+    <!-- MMC -->
+    <div class="activity-card" onclick="openModal('modal-mmc')">
+      <div class="activity-card-header">
+        <img src="assets/icons/mathetmaroc.png" alt="Math&Maroc" class="activity-logo">
+        <div class="activity-card-content">
+          <div class="activity-title">Moroccan Mathematical Competition (MMC)</div>
+          <div class="activity-role">National Participant</div>
+          <div class="activity-date">2023 - 2024</div>
+        </div>
+      </div>
+      <div class="activity-description">
+        Selected as a national participant in both the 2023 (inaugural edition) and 2024 editions organized by Math&Maroc.
+      </div>
+      <ul class="activity-achievements">
+        <li>Competed against top mathematical talents from across Morocco</li>
+        <li>Solved complex mathematical problems under time constraints</li>
+        <li>Demonstrated strong analytical and problem-solving skills</li>
+      </ul>
+      <div class="expand-hint">▼ Click to expand ▼</div>
+    </div>
+
+    <!-- ACM Cybersecurity -->
+    <div class="activity-card" onclick="openModal('modal-acm')">
+      <div class="activity-card-header">
+        <div class="activity-card-content">
+          <div class="activity-title">ACM Cybersecurity Division</div>
+          <div class="activity-role">Member / Problem Setter</div>
+          <div class="activity-date">Ongoing</div>
+        </div>
+      </div>
+      <div class="activity-description">
+        Active member of the ACM Cybersecurity Division, contributing to CTF competitions and community building.
+      </div>
+      <ul class="activity-achievements">
+        <li>Placed 6th nationally in the NullHat CTF competition</li>
+        <li>Organized and managed a local CTF event for the cybersecurity community</li>
+        <li>Created challenging Forensics challenges for participants</li>
+        <li>Managed platform infrastructure and competition logistics</li>
+        <li>Mentored junior members in cybersecurity concepts and techniques</li>
+      </ul>
+      <div class="expand-hint">▼ Click to expand ▼</div>
+    </div>
+
+    <!-- ForgeBots -->
+    <div class="activity-card" onclick="openModal('modal-forgebots')">
+      <div class="activity-card-header">
+        <div class="activity-card-content">
+          <div class="activity-title">ForgeBots – IoT, Robotics & AI</div>
+          <div class="activity-role">Board Member / Project Manager</div>
+          <div class="activity-date">Ongoing</div>
+        </div>
+      </div>
+      <div class="activity-description">
+        Key leadership role in ForgeBots, a student organization focused on IoT, Robotics, and Artificial Intelligence projects and education.
+      </div>
+      <ul class="activity-achievements">
+        <li>Coordinated multiple technical projects across different teams</li>
+        <li>Developed comprehensive year-long educational courses on IoT concepts</li>
+        <li>Created and delivered AI fundamentals curriculum for club members</li>
+        <li>Organized workshops and technical sessions for skill development</li>
+        <li>Managed project timelines and resource allocation</li>
+        <li>Fostered collaboration between hardware and software teams</li>
+      </ul>
+      <div class="expand-hint">▼ Click to expand ▼</div>
+    </div>
+
+  </div>
+
+  <!-- Modal Overlays -->
+  <!-- MMC Modal -->
+  <div class="modal-overlay" id="modal-mmc" onclick="closeModal(event, 'modal-mmc')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-close" onclick="closeModal(event, 'modal-mmc')">×</div>
+      <div class="modal-header">
+        <img src="assets/icons/mathetmaroc.png" alt="Math&Maroc" class="modal-logo">
+        <div>
+          <div class="modal-title">Moroccan Mathematical Competition (MMC)</div>
+          <div class="activity-role">National Participant</div>
+          <div class="activity-date">2023 - 2024</div>
+        </div>
+      </div>
+      <div class="activity-description">
+        Selected as a national participant in both the 2023 (inaugural edition) and 2024 editions organized by Math&Maroc. This prestigious competition brings together the brightest mathematical minds from across Morocco to solve challenging problems and demonstrate their analytical abilities.
+      </div>
+      <ul class="activity-achievements">
+        <li>Competed against top mathematical talents from across Morocco in a rigorous national competition</li>
+        <li>Solved complex mathematical problems under strict time constraints, demonstrating strong problem-solving skills</li>
+        <li>Demonstrated exceptional analytical and critical thinking abilities in high-pressure environments</li>
+        <li>Represented my institution in both the inaugural 2023 edition and the 2024 competition</li>
+        <li>Gained experience in advanced mathematical concepts and proof techniques</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ACM Modal -->
+  <div class="modal-overlay" id="modal-acm" onclick="closeModal(event, 'modal-acm')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-close" onclick="closeModal(event, 'modal-acm')">×</div>
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">ACM Cybersecurity Division</div>
+          <div class="activity-role">Member / Problem Setter</div>
+          <div class="activity-date">Ongoing</div>
+        </div>
+      </div>
+      <div class="activity-description">
+        Active member of the ACM Cybersecurity Division, contributing to CTF competitions and community building. Playing a key role in organizing events, creating challenges, and mentoring new members in the field of cybersecurity.
+      </div>
+      <ul class="activity-achievements">
+        <li>Placed 6th nationally in the NullHat CTF competition, competing against hundreds of teams from universities across Morocco</li>
+        <li>Organized and managed a comprehensive local CTF event for the cybersecurity community with 50+ participants</li>
+        <li>Created challenging and educational Forensics challenges covering memory analysis, disk forensics, and network packet analysis</li>
+        <li>Managed complete platform infrastructure including server setup, challenge deployment, and scoring systems</li>
+        <li>Handled competition logistics, timing, and participant support during live events</li>
+        <li>Mentored junior members in cybersecurity concepts, techniques, and best practices</li>
+        <li>Contributed to building a strong cybersecurity community through workshops and knowledge sharing sessions</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ForgeBots Modal -->
+  <div class="modal-overlay" id="modal-forgebots" onclick="closeModal(event, 'modal-forgebots')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-close" onclick="closeModal(event, 'modal-forgebots')">×</div>
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">ForgeBots – IoT, Robotics & AI</div>
+          <div class="activity-role">Board Member / Project Manager</div>
+          <div class="activity-date">Ongoing</div>
+        </div>
+      </div>
+      <div class="activity-description">
+        Key leadership role in ForgeBots, a student organization focused on IoT, Robotics, and Artificial Intelligence projects and education. Leading technical initiatives and educational programs to develop hands-on skills in emerging technologies.
+      </div>
+      <ul class="activity-achievements">
+        <li>Coordinated multiple technical projects across different teams, ensuring smooth collaboration and timely deliveries</li>
+        <li>Developed comprehensive year-long educational courses covering fundamental and advanced IoT concepts</li>
+        <li>Created and delivered AI fundamentals curriculum for club members, including machine learning basics and neural networks</li>
+        <li>Organized workshops and technical sessions for skill development in hardware, software, and AI domains</li>
+        <li>Managed project timelines, resource allocation, and budget planning for multiple concurrent initiatives</li>
+        <li>Fostered collaboration between hardware and software teams, bridging the gap between different technical domains</li>
+        <li>Mentored team members in project planning, technical implementation, and presentation skills</li>
+        <li>Led the organization's strategic planning and expansion into new technical areas</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function toggleNav() {
+      const sidebar = document.getElementById('sidebarNav');
+      const overlay = document.getElementById('sidebarOverlay');
+      const toggle = document.getElementById('navToggle');
+      
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      toggle.classList.toggle('open');
+    }
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(event, modalId) {
+      event.stopPropagation();
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+          modal.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

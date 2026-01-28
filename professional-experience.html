@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Professional Experience — Yahya Mansoub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --green: #35ff7a;
+      --text: #d9ffe7;
+      --cyan: #00d9ff;
+      --purple: #a855f7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+    body{
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #06110b;
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    .pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+    /* Background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: url("assets/prof_exp_bg.gif") center center / cover no-repeat;
+    }
+    .tint{
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(1100px 650px at 50% 30%, rgba(53,255,122,0.08), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,0.50), rgba(0,0,0,0.75));
+    }
+    .scanlines{
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      opacity: 0.40;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 100px 40px 80px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Left Sidebar Navigation */
+    .nav-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.85);
+      border: 2px solid rgba(53,255,122,0.3);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      user-select: none;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(0,0,0,0.95);
+      border-color: rgba(53,255,122,0.6);
+      transform: scale(1.05);
+    }
+
+    .nav-toggle-line {
+      width: 28px;
+      height: 3px;
+      background: var(--green);
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .sidebar-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      background: rgba(6,17,11,0.98);
+      border-right: 2px solid rgba(53,255,122,0.2);
+      padding: 90px 20px 20px;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(.18,.9,.2,1);
+      backdrop-filter: blur(16px);
+      overflow-y: auto;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+
+    .sidebar-nav.show {
+      transform: translateX(0);
+    }
+
+    .sidebar-nav-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(0,0,0,0.45);
+      border: 2px solid rgba(53,255,122,0.15);
+      border-radius: 10px;
+      font-size: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(53,255,122,0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .nav-link:hover {
+      background: rgba(53,255,122,0.08);
+      border-color: rgba(53,255,122,0.4);
+      transform: translateX(8px);
+      box-shadow: 0 4px 12px rgba(53,255,122,0.2);
+    }
+
+    .nav-link img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0.95);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .page-title {
+      font-size: 36px;
+      color: var(--cyan);
+      margin-bottom: 20px;
+      text-shadow: 0 0 30px rgba(0,217,255,0.4);
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--text);
+      opacity: 0.75;
+      line-height: 2;
+    }
+
+    /* Experience Grid */
+    .experience-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    .exp-card-large {
+      border: 2px solid rgba(53,255,122,0.35);
+      background: rgba(0,0,0,0.65);
+      border-radius: 20px;
+      padding: 35px;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(12px);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exp-card-large::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--green), var(--cyan), var(--purple));
+      opacity: 0;
+      z-index: -1;
+      border-radius: 20px;
+      transition: opacity 0.4s ease;
+    }
+
+    .exp-card-large:hover::before {
+      opacity: 0.3;
+    }
+
+    .exp-card-large:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 25px 70px rgba(53,255,122,0.4);
+      background: rgba(0,0,0,0.8);
+    }
+
+    .exp-tag-large {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 14px;
+      background: rgba(0,217,255,0.2);
+      border: 1px solid rgba(0,217,255,0.5);
+      border-radius: 8px;
+      font-size: 9px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .exp-logo-large {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 25px;
+      object-fit: contain;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .exp-card-large:hover .exp-logo-large {
+      transform: scale(1.1);
+    }
+
+    .exp-role-large {
+      font-size: 16px;
+      color: var(--cyan);
+      margin-bottom: 15px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .exp-company-large {
+      font-size: 13px;
+      color: var(--text);
+      opacity: 0.88;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .exp-date-large {
+      font-size: 11px;
+      color: var(--purple);
+      opacity: 0.8;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .exp-description {
+      font-size: 11px;
+      color: var(--text);
+      opacity: 0.8;
+      line-height: 2;
+      text-align: left;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(53,255,122,0.2);
+    }
+
+    .exp-cta {
+      margin-top: 25px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--green);
+      opacity: 0.9;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 80px 20px 40px;
+      }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .page-subtitle {
+        font-size: 11px;
+      }
+
+      .experience-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg pixel" aria-hidden="true"></div>
+  <div class="tint" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- Sidebar Navigation Toggle (Hamburger) -->
+  <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleNav()"></div>
+
+  <!-- Left Sidebar Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="sidebar-nav-inner">
+      <a class="nav-link" href="index.html">
+        <img class="pixel" src="assets/icons/home.gif" alt="">
+        <span>HOME</span>
+      </a>
+      <a class="nav-link" href="skills.html">
+        <img class="pixel" src="assets/icons/star.gif" alt="">
+        <span>SKILLS</span>
+      </a>
+      <a class="nav-link" href="leadership-activities.html">
+        <img class="pixel" src="assets/icons/LandC.gif" alt="">
+        <span>LEADERSHIP & ACTIVITIES</span>
+      </a>
+      <a class="nav-link" href="projects.html">
+        <img class="pixel" src="assets/icons/projects.png" alt="">
+        <span>PROJECTS</span>
+      </a>
+      <a class="nav-link" href="ctf.html">
+        <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
+        <span>CTF</span>
+      </a>
+      <a class="nav-link" href="profile.html">
+        <img class="pixel" src="assets/icons/profile.png" alt="">
+        <span>PROFILE</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">PROFESSIONAL EXPERIENCE</h1>
+      <p class="page-subtitle">
+        A comprehensive overview of my professional journey<br>
+        Click any experience to view detailed information
+      </p>
+    </div>
+
+    <div class="experience-grid">
+      <!-- Experience Card 1: Green Energy Park -->
+      <a href="#gep" class="exp-card-large">
+        <div class="exp-tag-large">Intern</div>
+        <img src="assets/logo_gep.png" alt="Green Energy Park" class="exp-logo-large">
+        <div class="exp-role-large">AI & Systems Development Research Intern</div>
+        <div class="exp-company-large">Green Energy Park</div>
+        <div class="exp-date-large">June 2025 - August 2025</div>
+        <div class="exp-description">
+          Researched and optimized an autoencoder model for anomaly detection in IoT sensor data. 
+          Engineered the full-stack data pipeline and cloud dashboard for real-time system monitoring.
+        </div>
+        <div class="exp-cta">→ VIEW DETAILS</div>
+      </a>
+
+      <!-- Experience Card 2: UM6P & GEP -->
+      <a href="#um6p-lca" class="exp-card-large">
+        <div class="exp-tag-large">Intern</div>
+        <img src="assets/um6p_cc_logo.png" alt="UM6P" class="exp-logo-large">
+        <div class="exp-role-large">Data Science & Modeling Research Intern</div>
+        <div class="exp-company-large">UM6P College of Computing & Green Energy Park</div>
+        <div class="exp-date-large">February 2025 - June 2025</div>
+        <div class="exp-description">
+          Developed a Python tool using Monte Carlo simulation to quantify uncertainty in building Life Cycle Assessments (LCA). 
+          Performed sensitivity analysis to identify key variables and provided data-driven recommendations.
+        </div>
+        <div class="exp-cta">→ VIEW DETAILS</div>
+      </a>
+
+      <!-- Experience Card 3: UM6P Research -->
+      <a href="#um6p-research" class="exp-card-large">
+        <img src="assets/um6p_cc_logo.png" alt="UM6P" class="exp-logo-large">
+        <div class="exp-role-large">Cross-Domain Research in Optimization & Learning</div>
+        <div class="exp-company-large">UM6P College of Computing</div>
+        <div class="exp-date-large">Since September 2025</div>
+        <div class="exp-description">
+          Researching across autonomous exploration, robotic control optimization, and cryptanalysis with machine learning. 
+          Combining SLAM models, reinforcement learning, PID control, and unsupervised learning for diverse applications.
+        </div>
+        <div class="exp-cta">→ VIEW DETAILS</div>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function toggleNav() {
+      const nav = document.getElementById('sidebarNav');
+      const toggle = document.getElementById('navToggle');
+      const overlay = document.getElementById('sidebarOverlay');
+      nav.classList.toggle('show');
+      toggle.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+  </script>
+</body>
+</html>

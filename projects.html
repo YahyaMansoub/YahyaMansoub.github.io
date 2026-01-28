@@ -1,0 +1,97 @@
+<!-- projects.html (DUMMY) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Yahya Mansoub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root{ --text:#d9ffe7; }
+    html, body { height: 100%; }
+    body{
+      font-family:"Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#06110b;
+      color:var(--text);
+      overflow-x:hidden;
+    }
+    .pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
+    .bg{
+      position: fixed; inset:0; z-index:-4;
+      background: url("assets/bg5.gif") center/cover no-repeat;
+      opacity: 0.55;
+    }
+    .tint{
+      position: fixed; inset:0; z-index:-3;
+      background: radial-gradient(900px 600px at 60% 20%, rgba(53,255,122,0.12), transparent 60%),
+                  linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.80));
+    }
+    .scanlines{
+      position: fixed; inset:0; z-index:-2;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      mix-blend-mode: multiply;
+      opacity: 0.40;
+      pointer-events: none;
+    }
+    .card{
+      border: 2px solid rgba(53,255,122,0.22);
+      background: rgba(0,0,0,0.28);
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 22px 90px rgba(0,0,0,0.65);
+      backdrop-filter: blur(6px);
+      width: min(900px, calc(100vw - 32px));
+    }
+    .title{
+      font-size: 18px;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+    }
+    .txt{
+      margin-top: 16px;
+      font-size: 11px;
+      line-height: 1.9;
+      opacity: 0.9;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+    }
+    .btn{
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 3px solid rgba(53,255,122,0.65);
+      background: rgba(0,0,0,0.28);
+      box-shadow: 0 9px 0 rgba(0,0,0,0.36), 0 22px 70px rgba(0,0,0,0.42);
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn:hover{ transform: translateY(2px); }
+    .btn:active{ transform: translateY(7px); }
+  </style>
+</head>
+<body>
+  <div class="bg pixel" aria-hidden="true"></div>
+  <div class="tint" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <main class="min-h-screen flex items-center justify-center p-4">
+    <div class="card">
+      <div class="title">PROJECTS</div>
+      <div class="txt">
+        Dummy page for now. Next we’ll expand into full project cards (screenshots, tech stack, links),
+        loaded from <span class="opacity-90">data/site.json</span>.
+      </div>
+
+      <button class="btn" onclick="location.href='index.html'">
+        ◀ BACK
+      </button>
+    </div>
+  </main>
+</body>
+</html>

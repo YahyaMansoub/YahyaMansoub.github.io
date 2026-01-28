@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skills — Yahya Mansoub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root { --text: #d9ffe7; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #0a0a1e;
+      color: var(--text);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .pixel { 
+      image-rendering: pixelated; 
+      image-rendering: crisp-edges; 
+    }
+
+    /* Background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      background: url("assets/blackhole.gif") center/cover no-repeat;
+      opacity: 0.6;
+    }
+
+    .tint {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: linear-gradient(180deg, rgba(10,10,30,0.5), rgba(10,10,30,0.8));
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
+      mix-blend-mode: multiply;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Left Sidebar Navigation */
+    .nav-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.85);
+      border: 2px solid rgba(249, 115, 22, 0.5);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      user-select: none;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(0,0,0,0.95);
+      border-color: rgba(249, 115, 22, 0.8);
+      transform: scale(1.05);
+    }
+
+    .nav-toggle-line {
+      width: 28px;
+      height: 3px;
+      background: rgb(249, 115, 22);
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .sidebar-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      background: rgba(10,10,30,0.98);
+      border-right: 2px solid rgba(249, 115, 22, 0.3);
+      padding: 90px 20px 20px;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(.18,.9,.2,1);
+      backdrop-filter: blur(16px);
+      overflow-y: auto;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+
+    .sidebar-nav.show {
+      transform: translateX(0);
+    }
+
+    .sidebar-nav-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(0,0,0,0.45);
+      border: 2px solid rgba(249, 115, 22, 0.2);
+      border-radius: 10px;
+      font-size: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.15), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .nav-link:hover {
+      background: rgba(249, 115, 22, 0.1);
+      border-color: rgba(249, 115, 22, 0.6);
+      transform: translateX(8px);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+    }
+
+    .nav-link img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0.95);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Main Container */
+    .skills-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      padding: 40px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .title {
+      font-size: 32px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(147, 51, 234, 0.8), 0 0 40px rgba(147, 51, 234, 0.4);
+      margin-bottom: 20px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(147, 51, 234, 0.8), 0 0 40px rgba(147, 51, 234, 0.4); }
+      to { text-shadow: 0 0 30px rgba(147, 51, 234, 1), 0 0 60px rgba(147, 51, 234, 0.6); }
+    }
+
+    /* Skill Cards */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .skill-card {
+      position: relative;
+      border: 3px solid;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 16px;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 0%, currentColor 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .skill-card:hover::before {
+      opacity: 0.15;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 20px 60px currentColor;
+    }
+
+    .skill-card:active {
+      transform: translateY(-5px) scale(1.02);
+    }
+
+    /* Cybersecurity - Purple Neon */
+    .skill-card.cyber {
+      border-color: #a855f7;
+      color: #a855f7;
+    }
+
+    /* Software - Steel/Iron */
+    .skill-card.software {
+      border-color: #94a3b8;
+      color: #94a3b8;
+    }
+
+    /* AI - Yellow Cyberpunk */
+    .skill-card.ai {
+      border-color: #fbbf24;
+      color: #fbbf24;
+    }
+
+    /* Back Button */
+    .back-btn {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      padding: 15px 25px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid rgba(249, 115, 22, 0.6);
+      border-radius: 8px;
+      color: rgba(249, 115, 22, 1);
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      background: rgba(249, 115, 22, 0.3);
+      transform: translateX(-5px);
+      border-color: rgba(249, 115, 22, 0.9);
+    }
+
+    .skill-icon {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px currentColor);
+    }
+
+    .skill-title {
+      font-size: 16px;
+      text-align: center;
+      line-height: 1.4;
+      color: #fff;
+      text-shadow: 0 0 10px currentColor;
+    }
+
+    .skill-subtitle {
+      font-size: 10px;
+      text-align: center;
+      opacity: 0.8;
+      color: currentColor;
+    }
+
+    /* Loading Screen */
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .loader-overlay.active {
+      display: flex;
+    }
+
+    .loader-character {
+      width: 180px;
+      height: 180px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 20px currentColor);
+    }
+
+    .progress-container {
+      width: 400px;
+      max-width: 80vw;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid currentColor;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: currentColor;
+      width: 0%;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 20px currentColor;
+    }
+
+    .loader-text {
+      font-size: 14px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 10px currentColor;
+      margin-top: 15px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .title {
+        font-size: 20px;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .skill-title {
+        font-size: 14px;
+      }
+
+      .skill-icon {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <div class="bg"></div>
+  <div class="tint"></div>
+  <div class="scanlines"></div>
+
+  <!-- Sidebar Navigation Toggle (Hamburger) -->
+  <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleNav()"></div>
+
+  <!-- Left Sidebar Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="sidebar-nav-inner">
+      <a class="nav-link" href="index.html?from=skills">
+        <img class="pixel" src="assets/icons/home.gif" alt="">
+        <span>HOME</span>
+      </a>
+      <a class="nav-link" href="professional-experience.html">
+        <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
+        <span>PROFESSIONAL EXPERIENCE</span>
+      </a>
+      <a class="nav-link" href="leadership-activities.html">
+        <img class="pixel" src="assets/icons/LandC.gif" alt="">
+        <span>LEADERSHIP & ACTIVITIES</span>
+      </a>
+      <a class="nav-link" href="projects.html">
+        <img class="pixel" src="assets/icons/projects.png" alt="">
+        <span>PROJECTS</span>
+      </a>
+      <a class="nav-link" href="ctf.html">
+        <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
+        <span>CTF</span>
+      </a>
+      <a class="nav-link" href="profile.html">
+        <img class="pixel" src="assets/icons/profile.png" alt="">
+        <span>PROFILE</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="skills-container">
+    <h1 class="title">SELECT YOUR PATH</h1>
+
+    <div class="skills-grid">
+      <!-- Cybersecurity -->
+      <div class="skill-card cyber" onclick="loadSkill('cybersecurity', '#a855f7')">
+        <img src="assets/icons/cyber-icon.gif" alt="Cybersecurity" class="skill-icon pixel">
+        <div class="skill-title">CYBERSECURITY</div>
+        <div class="skill-subtitle">Security • Penetration • Defense</div>
+      </div>
+
+      <!-- Software Engineering -->
+      <div class="skill-card software" onclick="loadSkill('software', '#94a3b8')">
+        <img src="assets/icons/soft-icon.gif" alt="Software" class="skill-icon pixel">
+        <div class="skill-title">SOFTWARE ENGINEERING<br>& DEVOPS</div>
+        <div class="skill-subtitle">Development • Architecture • Operations</div>
+      </div>
+
+      <!-- AI & Data Science -->
+      <div class="skill-card ai" onclick="loadSkill('ai', '#fbbf24')">
+        <img src="assets/icons/ai-icon.gif" alt="AI" class="skill-icon pixel">
+        <div class="skill-title">DATA SCIENCE<br>& AI</div>
+        <div class="skill-subtitle">Machine Learning • Analytics • Intelligence</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div class="loader-overlay" id="loaderOverlay">
+    <img src="" alt="" class="loader-character pixel" id="loaderCharacter">
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="loader-text" id="loaderText">LOADING...</div>
+    </div>
+  </div>
+
+  <script>
+    // Check if we're returning from a skills page
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnFrom = urlParams.get('from');
+    
+    if (returnFrom) {
+      // Remove query param immediately to prevent re-triggering
+      window.history.replaceState({}, '', 'skills.html');
+      
+      // Show loader on page load when returning
+      const returnLoaderConfig = {
+        cybersecurity: {
+          color: '#a855f7',
+          character: 'assets/icons/cyber-icon.gif',
+          text: 'RETURNING TO HUB...'
+        },
+        software: {
+          color: '#94a3b8',
+          character: 'assets/icons/soft-icon.gif',
+          text: 'RETURNING TO HUB...'
+        },
+        ai: {
+          color: '#fbbf24',
+          character: 'assets/icons/ai-icon.gif',
+          text: 'RETURNING TO HUB...'
+        }
+      };
+
+      const config = returnLoaderConfig[returnFrom];
+      if (config) {
+        const overlay = document.getElementById('loaderOverlay');
+        const character = document.getElementById('loaderCharacter');
+        const progressFill = document.getElementById('progressFill');
+        const loaderText = document.getElementById('loaderText');
+        const progressContainer = document.getElementById('progressContainer');
+
+        // Reset progress bar
+        progressFill.style.width = '0%';
+        
+        overlay.style.color = config.color;
+        progressContainer.style.color = config.color;
+        character.src = config.character;
+        loaderText.textContent = config.text;
+        overlay.classList.add('active');
+
+        // Animate progress faster
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += Math.random() * 25;
+          if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            setTimeout(() => {
+              overlay.classList.remove('active');
+            }, 200);
+          }
+          progressFill.style.width = progress + '%';
+        }, 60);
+      }
+    }
+
+    const loaderConfig = {
+      cybersecurity: {
+        color: '#a855f7',
+        character: 'assets/icons/cyber-icon.gif',
+        text: 'ACCESSING SECURE SYSTEMS...',
+        page: 'skills-cybersecurity.html'
+      },
+      software: {
+        color: '#94a3b8',
+        character: 'assets/icons/soft-icon.gif',
+        text: 'COMPILING CODE...',
+        page: 'skills-software.html'
+      },
+      ai: {
+        color: '#fbbf24',
+        character: 'assets/icons/ai-icon.gif',
+        text: 'TRAINING NEURAL NETWORKS...',
+        page: 'skills-ai.html'
+      }
+    };
+
+    function loadSkill(type, color) {
+      const config = loaderConfig[type];
+      const overlay = document.getElementById('loaderOverlay');
+      const character = document.getElementById('loaderCharacter');
+      const progressFill = document.getElementById('progressFill');
+      const loaderText = document.getElementById('loaderText');
+      const progressContainer = document.getElementById('progressContainer');
+
+      // Reset progress bar
+      progressFill.style.width = '0%';
+
+      // Set theme color
+      overlay.style.color = color;
+      progressContainer.style.color = color;
+
+      // Set character and text
+      character.src = config.character;
+      loaderText.textContent = config.text;
+
+      // Show overlay
+      overlay.classList.add('active');
+
+      // Animate progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          setTimeout(() => {
+            window.location.href = config.page;
+          }, 300);
+        }
+        progressFill.style.width = progress + '%';
+      }, 100);
+    }
+
+    function toggleNav() {
+      const nav = document.getElementById('sidebarNav');
+      const toggle = document.getElementById('navToggle');
+      const overlay = document.getElementById('sidebarOverlay');
+      nav.classList.toggle('show');
+      toggle.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+  </script>
+</body>
+</html>
