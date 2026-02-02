@@ -6,73 +6,410 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects — Yahya Mansoub</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
-    :root{ --text:#d9ffe7; }
-    html, body { height: 100%; }
+    :root{
+      --green: #35ff7a;
+      --text: #d9ffe7;
+      --cyan: #00d9ff;
+      --purple: #a855f7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
     body{
-      font-family:"Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:#06110b;
-      color:var(--text);
-      overflow-x:hidden;
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #06110b;
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
     }
     .pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
-    .bg{
-      position: fixed; inset:0; z-index:-4;
-      background: url("assets/bg5.gif") center/cover no-repeat;
-      opacity: 0.55;
+
+    /* Background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: url("assets/bg5.gif") center center / cover no-repeat;
     }
     .tint{
-      position: fixed; inset:0; z-index:-3;
-      background: radial-gradient(900px 600px at 60% 20%, rgba(53,255,122,0.12), transparent 60%),
-                  linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.80));
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(1100px 650px at 50% 30%, rgba(53,255,122,0.08), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,0.50), rgba(0,0,0,0.75));
     }
     .scanlines{
-      position: fixed; inset:0; z-index:-2;
+      position: fixed;
+      inset: 0;
+      z-index: -1;
       background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 2px, rgba(0,0,0,0.14) 3px);
-      mix-blend-mode: multiply;
       opacity: 0.40;
       pointer-events: none;
+      mix-blend-mode: multiply;
     }
-    .card{
-      border: 2px solid rgba(53,255,122,0.22);
-      background: rgba(0,0,0,0.28);
-      border-radius: 22px;
-      padding: 26px;
-      box-shadow: 0 22px 90px rgba(0,0,0,0.65);
-      backdrop-filter: blur(6px);
-      width: min(900px, calc(100vw - 32px));
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 100px 40px 80px;
+      animation: fadeInUp 0.8s ease-out;
     }
-    .title{
-      font-size: 18px;
-      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    .txt{
-      margin-top: 16px;
-      font-size: 11px;
-      line-height: 1.9;
-      opacity: 0.9;
-      text-shadow: 0 14px 40px rgba(0,0,0,0.75);
-    }
-    .btn{
-      margin-top: 18px;
-      display: inline-flex;
+
+    /* Left Sidebar Navigation */
+    .nav-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.85);
+      border: 2px solid rgba(53,255,122,0.3);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      border-radius: 16px;
-      border: 3px solid rgba(53,255,122,0.65);
-      background: rgba(0,0,0,0.28);
-      box-shadow: 0 9px 0 rgba(0,0,0,0.36), 0 22px 70px rgba(0,0,0,0.42);
+      gap: 5px;
       cursor: pointer;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
       user-select: none;
     }
-    .btn:hover{ transform: translateY(2px); }
-    .btn:active{ transform: translateY(7px); }
+
+    .nav-toggle:hover {
+      background: rgba(0,0,0,0.95);
+      border-color: rgba(53,255,122,0.6);
+      transform: scale(1.05);
+    }
+
+    .nav-toggle-line {
+      width: 28px;
+      height: 3px;
+      background: var(--green);
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open .nav-toggle-line:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .sidebar-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      background: rgba(6,17,11,0.98);
+      border-right: 2px solid rgba(53,255,122,0.2);
+      padding: 90px 20px 20px;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(.18,.9,.2,1);
+      backdrop-filter: blur(16px);
+      overflow-y: auto;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+
+    .sidebar-nav.show {
+      transform: translateX(0);
+    }
+
+    .sidebar-nav-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(0,0,0,0.45);
+      border: 2px solid rgba(53,255,122,0.15);
+      border-radius: 10px;
+      font-size: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(53,255,122,0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .nav-link:hover {
+      background: rgba(53,255,122,0.08);
+      border-color: rgba(53,255,122,0.4);
+      transform: translateX(8px);
+      box-shadow: 0 4px 12px rgba(53,255,122,0.2);
+    }
+
+    .nav-link img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0.95);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .page-title {
+      font-size: 36px;
+      color: var(--cyan);
+      margin-bottom: 20px;
+      text-shadow: 0 0 30px rgba(0,217,255,0.4);
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--text);
+      opacity: 0.75;
+      line-height: 2;
+    }
+
+    /* Projects Grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    .project-card {
+      border: 2px solid rgba(53,255,122,0.35);
+      background: rgba(0,0,0,0.65);
+      border-radius: 20px;
+      padding: 35px;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--green), var(--cyan), var(--purple));
+      opacity: 0;
+      z-index: -1;
+      border-radius: 20px;
+      transition: opacity 0.4s ease;
+    }
+
+    .project-card:hover::before {
+      opacity: 0.3;
+    }
+
+    .project-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 25px 70px rgba(53,255,122,0.4);
+      background: rgba(0,0,0,0.8);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .project-title {
+      font-size: 18px;
+      color: var(--cyan);
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .project-tag {
+      padding: 6px 12px;
+      background: rgba(0,217,255,0.2);
+      border: 1px solid rgba(0,217,255,0.5);
+      border-radius: 8px;
+      font-size: 9px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tech-tag {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 9px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      border: 2px solid;
+    }
+
+    .tech-tag:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Technology brand colors */
+    .tech-react { background: rgba(97,218,251,0.15); border-color: #61DAFB; color: #61DAFB; }
+    .tech-typescript { background: rgba(49,120,198,0.15); border-color: #3178C6; color: #3178C6; }
+    .tech-spring { background: rgba(109,179,63,0.15); border-color: #6DB33F; color: #6DB33F; }
+    .tech-postgresql { background: rgba(51,103,145,0.15); border-color: #336791; color: #336791; }
+    .tech-docker { background: rgba(36,150,237,0.15); border-color: #2496ED; color: #2496ED; }
+    .tech-java { background: rgba(248,152,32,0.15); border-color: #f89820; color: #f89820; }
+    .tech-go { background: rgba(0,173,216,0.15); border-color: #00ADD8; color: #00ADD8; }
+    .tech-vite { background: rgba(100,108,255,0.15); border-color: #646CFF; color: #A78BFA; }
+    .tech-arduino { background: rgba(0,151,157,0.15); border-color: #00979D; color: #00979D; }
+    .tech-cpp { background: rgba(0,89,156,0.15); border-color: #00599C; color: #659AD2; }
+    .tech-nginx { background: rgba(0,150,57,0.15); border-color: #009639; color: #00C853; }
+    .tech-python { background: rgba(55,118,171,0.15); border-color: #3776AB; color: #4B8BBE; }
+    .tech-ml { background: rgba(242,148,0,0.15); border-color: #F29400; color: #F9A825; }
+    .tech-numpy { background: rgba(77,158,209,0.15); border-color: #4D9ED1; color: #5DADE2; }
+    .tech-vue { background: rgba(65,184,131,0.15); border-color: #41B883; color: #42D392; }
+    .tech-tailwind { background: rgba(56,189,248,0.15); border-color: #38BDF8; color: #38BDF8; }
+    .tech-vuex { background: rgba(65,184,131,0.15); border-color: #41B883; color: #42D392; }
+
+    .project-description {
+      font-size: 11px;
+      color: var(--text);
+      opacity: 0.85;
+      line-height: 2;
+      margin-bottom: 20px;
+    }
+
+    .project-tech {
+      font-size: 10px;
+      color: var(--purple);
+      opacity: 0.9;
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .project-link {
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: 2px solid rgba(102, 126, 234, 0.5);
+      border-radius: 10px;
+      color: white;
+      font-size: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .project-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 80px 20px 40px;
+      }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .page-subtitle {
+        font-size: 11px;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -80,18 +417,233 @@
   <div class="tint" aria-hidden="true"></div>
   <div class="scanlines" aria-hidden="true"></div>
 
-  <main class="min-h-screen flex items-center justify-center p-4">
-    <div class="card">
-      <div class="title">PROJECTS</div>
-      <div class="txt">
-        Dummy page for now. Next we’ll expand into full project cards (screenshots, tech stack, links),
-        loaded from <span class="opacity-90">data/site.json</span>.
+  <!-- Sidebar Navigation Toggle (Hamburger) -->
+  <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+    <div class="nav-toggle-line"></div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleNav()"></div>
+
+  <!-- Left Sidebar Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="sidebar-nav-inner">
+      <a class="nav-link" href="index.html">
+        <img class="pixel" src="assets/icons/home.gif" alt="">
+        <span>HOME</span>
+      </a>
+      <a class="nav-link" href="skills.html">
+        <img class="pixel" src="assets/icons/star.gif" alt="">
+        <span>SKILLS</span>
+      </a>
+      <a class="nav-link" href="professional-experience.html">
+        <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
+        <span>PROF EXPERIENCE</span>
+      </a>
+      <a class="nav-link" href="leadership-activities.html">
+        <img class="pixel" src="assets/icons/LandC.gif" alt="">
+        <span>LEADERSHIP & ACTIVITIES</span>
+      </a>
+      <a class="nav-link" href="ctf.html">
+        <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
+        <span>CTF</span>
+      </a>
+      <a class="nav-link" href="profile.html">
+        <img class="pixel" src="assets/icons/profile.png" alt="">
+        <span>PROFILE</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">PROJECTS</h1>
+      <p class="page-subtitle">
+        A showcase of my technical projects and implementations<br>
+        From full-stack applications to embedded systems
+      </p>
+    </div>
+
+    <div class="projects-grid">
+      <!-- Project 1: NOTAKE -->
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">NOTAKE</div>
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">Full-Stack</span>
+          <span class="project-tag">Web App</span>
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag tech-react">React</span>
+          <span class="tech-tag tech-typescript">TypeScript</span>
+          <span class="tech-tag tech-spring">Spring Boot</span>
+          <span class="tech-tag tech-postgresql">PostgreSQL</span>
+          <span class="tech-tag tech-docker">Docker</span>
+          <span class="tech-tag tech-nginx">Nginx</span>
+        </div>
+        <div class="project-description">
+          A modern, full-stack note-taking application featuring secure JWT-based authentication, real-time data synchronization, and a beautiful dark-themed UI. Built with React + TypeScript frontend and Spring Boot backend, with PostgreSQL database and comprehensive RESTful APIs.
+        </div>
+        <div class="project-tech">
+          <strong>Tech Stack:</strong> React 19, TypeScript, Spring Boot, PostgreSQL, JWT, Docker, Nginx, GitHub Actions CI/CD
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/YahyaMansoub/NOTAKE" target="_blank" class="project-link">
+            → GitHub Repo
+          </a>
+        </div>
       </div>
 
-      <button class="btn" onclick="location.href='index.html'">
-        ◀ BACK
-      </button>
+      <!-- Project 2: AES Power Analysis -->
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">AES Power Analysis (Unsupervised)</div>
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">Academic</span>
+          <span class="project-tag">Side-Channel</span>
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag tech-python">Python</span>
+          <span class="tech-tag tech-ml">Scikit-learn</span>
+          <span class="tech-tag tech-numpy">NumPy</span>
+        </div>
+        <div class="project-description">
+          Academic proof-of-concept demonstrating an unsupervised learning pipeline for side-channel power analysis. This project showcases a practical approach toward recovering AES-related information from power traces using machine learning techniques, without requiring labeled training data.
+        </div>
+        <div class="project-tech">
+          <strong>Tech Stack:</strong> Python, Machine Learning, Unsupervised Learning, AES Cryptography, Power Analysis
+        </div>
+        <div class="project-links">
+          <a href="assets/aes_ml_presenration.pdf" target="_blank" class="project-link">
+            → View Presentation
+          </a>
+        </div>
+      </div>
+
+      <!-- Project 3: Sudoku Game -->
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">Sudoku Game</div>
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">Desktop App</span>
+          <span class="project-tag">Java</span>
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag tech-java">Java</span>
+          <span class="tech-tag tech-java">Swing</span>
+        </div>
+        <div class="project-description">
+          A fully functional Sudoku game with an intuitive GUI built using Java Swing. Features real-time input validation following Sudoku rules (rows, columns, and 3x3 boxes), visual feedback for valid/invalid moves, game controls (reset, check solution, show solution, new game), and color-coded cells for enhanced user experience.
+        </div>
+        <div class="project-tech">
+          <strong>Tech Stack:</strong> Java, Swing GUI, Object-Oriented Design
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/YahyaMansoub/SudokuGame" target="_blank" class="project-link">
+            → GitHub Repo
+          </a>
+        </div>
+      </div>
+
+      <!-- Project 4: File Transformation API -->
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">File Transformation API</div>
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">API</span>
+          <span class="project-tag">Full-Stack</span>
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag tech-go">Go</span>
+          <span class="tech-tag tech-react">React</span>
+          <span class="tech-tag tech-typescript">TypeScript</span>
+          <span class="tech-tag tech-vite">Vite</span>
+        </div>
+        <div class="project-description">
+          A lightweight web application for converting images between PNG and JPG formats. Features drag-and-drop file upload, live image preview, real-time backend health monitoring, and instant download of converted files. Built with a high-performance Go backend and modern React frontend with responsive design.
+        </div>
+        <div class="project-tech">
+          <strong>Tech Stack:</strong> Go, React, TypeScript, Vite, Axios, Image Processing
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/YahyaMansoub/File_Transformation_API" target="_blank" class="project-link">
+            → GitHub Repo
+          </a>
+        </div>
+      </div>
+
+      <!-- Project 5: Task Management Dashboard -->
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">Task Management Dashboard</div>
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">Full-Stack</span>
+          <span class="project-tag">Collaboration</span>
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag tech-vue">Vue.js</span>
+          <span class="tech-tag tech-vuex">Vuex</span>
+          <span class="tech-tag tech-spring">Spring Boot</span>
+          <span class="tech-tag tech-postgresql">PostgreSQL</span>
+          <span class="tech-tag tech-tailwind">Tailwind CSS</span>
+        </div>
+        <div class="project-description">
+          A comprehensive collaborative platform for project management featuring real-time task tracking, team communication, and file sharing. Built with Vue.js frontend and Spring Boot backend, it includes role-based access control, project invitations, chat groups for team communication, task assignment with deadline tracking, and integrated file management with upload/download capabilities.
+        </div>
+        <div class="project-tech">
+          <strong>Tech Stack:</strong> Vue.js, Vuex, Spring Boot, Hibernate, PostgreSQL, Tailwind CSS, Axios
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/YahyaMansoub/Task_Management_Dashboard" target="_blank" class="project-link">
+            → GitHub Repo
+          </a>
+        </div>
+      </div>
+
+      <!-- Project 6: Line Follower Robot -->
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">Line Follower Robot</div>
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">Robotics</span>
+          <span class="project-tag">Embedded</span>
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag tech-arduino">Arduino</span>
+          <span class="tech-tag tech-cpp">C++</span>
+        </div>
+        <div class="project-description">
+          An autonomous line-following robot implemented using Arduino and a state machine control system. Features three IR sensors for line detection, differential drive motor control with PWM speed regulation, intelligent turning and recovery behaviors, and real-time serial debugging for sensor monitoring and state tracking.
+        </div>
+        <div class="project-tech">
+          <strong>Tech Stack:</strong> Arduino, C++, State Machine Design, Motor Control, Sensor Integration
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/YahyaMansoub/LineFollowerRobot" target="_blank" class="project-link">
+            → GitHub Repo
+          </a>
+        </div>
+      </div>
     </div>
-  </main>
+  </div>
+
+  <script>
+    function toggleNav() {
+      const nav = document.getElementById('sidebarNav');
+      const toggle = document.getElementById('navToggle');
+      const overlay = document.getElementById('sidebarOverlay');
+      nav.classList.toggle('show');
+      toggle.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+  </script>
 </body>
 </html>

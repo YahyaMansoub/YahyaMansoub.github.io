@@ -352,6 +352,168 @@
       opacity: 0.9;
     }
 
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.9);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal.show {
+      display: block;
+    }
+
+    .modal-content {
+      background: rgba(6,17,11,0.98);
+      margin: 3% auto;
+      padding: 50px 60px;
+      border: 2px solid rgba(53,255,122,0.4);
+      border-radius: 20px;
+      width: 95%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideDown 0.4s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(53,255,122,0.2);
+    }
+
+    .modal-title-section {
+      flex: 1;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      color: var(--cyan);
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .modal-company {
+      font-size: 13px;
+      color: var(--text);
+      opacity: 0.88;
+      margin-bottom: 8px;
+    }
+
+    .modal-date {
+      font-size: 11px;
+      color: var(--purple);
+      opacity: 0.8;
+    }
+
+    .modal-close {
+      background: rgba(255,53,53,0.2);
+      border: 2px solid rgba(255,53,53,0.5);
+      color: #ff3535;
+      font-size: 24px;
+      font-weight: bold;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      line-height: 1;
+      font-family: Arial, sans-serif;
+    }
+
+    .modal-close:hover {
+      background: rgba(255,53,53,0.4);
+      transform: scale(1.1);
+    }
+
+    .modal-body {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 2.4;
+      opacity: 0.9;
+    }
+
+    .modal-body p {
+      margin-bottom: 25px;
+    }
+
+    .modal-body strong {
+      color: var(--green);
+    }
+
+    .company-image {
+      width: 100%;
+      max-width: 250px;
+      height: auto;
+      margin: 30px auto;
+      display: block;
+      border-radius: 14px;
+      border: 2px solid rgba(53,255,122,0.2);
+      padding: 15px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .modal-video {
+      width: 100%;
+      max-width: 800px;
+      margin: 30px auto;
+      display: block;
+      border-radius: 14px;
+      border: 2px solid rgba(53,255,122,0.3);
+      box-shadow: 0 10px 30px rgba(53,255,122,0.2);
+    }
+
+    .company-photo {
+      width: 100%;
+      max-width: 800px;
+      height: auto;
+      margin: 30px auto;
+      display: block;
+      border-radius: 14px;
+      border: 2px solid rgba(53,255,122,0.3);
+      box-shadow: 0 10px 30px rgba(53,255,122,0.2);
+    }
+
+    .dual-logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin: 30px auto;
+      flex-wrap: wrap;
+    }
+
+    .dual-logo {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      border-radius: 14px;
+      border: 2px solid rgba(53,255,122,0.2);
+      padding: 15px;
+      background: rgba(255,255,255,0.05);
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .container {
@@ -368,6 +530,25 @@
 
       .experience-grid {
         grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        width: 95%;
+        padding: 25px;
+        margin: 10% auto;
+      }
+
+      .modal-title {
+        font-size: 16px;
+      }
+
+      .modal-header {
+        flex-direction: column;
+      }
+
+      .modal-close {
+        align-self: flex-end;
+        margin-bottom: 15px;
       }
     }
   </style>
@@ -429,7 +610,7 @@
 
     <div class="experience-grid">
       <!-- Experience Card 1: Green Energy Park -->
-      <a href="#gep" class="exp-card-large">
+      <div class="exp-card-large" onclick="openModal('modal-gep')">
         <div class="exp-tag-large">Intern</div>
         <img src="assets/logo_gep.png" alt="Green Energy Park" class="exp-logo-large">
         <div class="exp-role-large">AI & Systems Development Research Intern</div>
@@ -440,10 +621,10 @@
           Engineered the full-stack data pipeline and cloud dashboard for real-time system monitoring.
         </div>
         <div class="exp-cta">→ VIEW DETAILS</div>
-      </a>
+      </div>
 
       <!-- Experience Card 2: UM6P & GEP -->
-      <a href="#um6p-lca" class="exp-card-large">
+      <div class="exp-card-large" onclick="openModal('modal-um6p-lca')">
         <div class="exp-tag-large">Intern</div>
         <img src="assets/um6p_cc_logo.png" alt="UM6P" class="exp-logo-large">
         <div class="exp-role-large">Data Science & Modeling Research Intern</div>
@@ -454,20 +635,101 @@
           Performed sensitivity analysis to identify key variables and provided data-driven recommendations.
         </div>
         <div class="exp-cta">→ VIEW DETAILS</div>
-      </a>
+      </div>
+    </div>
 
-      <!-- Experience Card 3: UM6P Research -->
-      <a href="#um6p-research" class="exp-card-large">
-        <img src="assets/um6p_cc_logo.png" alt="UM6P" class="exp-logo-large">
-        <div class="exp-role-large">Cross-Domain Research in Optimization & Learning</div>
-        <div class="exp-company-large">UM6P College of Computing</div>
-        <div class="exp-date-large">Since September 2025</div>
-        <div class="exp-description">
-          Researching across autonomous exploration, robotic control optimization, and cryptanalysis with machine learning. 
-          Combining SLAM models, reinforcement learning, PID control, and unsupervised learning for diverse applications.
+    <!-- Modal for Green Energy Park -->
+    <div id="modal-gep" class="modal" onclick="closeModalOnOutsideClick(event, 'modal-gep')">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-title-section">
+            <div class="modal-title">AI & Systems Development Research Intern</div>
+            <div class="modal-company">Green Energy Park</div>
+            <div class="modal-date">June 2025 - August 2025</div>
+          </div>
+          <button class="modal-close" onclick="closeModal('modal-gep')">&times;</button>
         </div>
-        <div class="exp-cta">→ VIEW DETAILS</div>
-      </a>
+        <div class="modal-body">
+          <img src="assets/logo_gep.png" alt="Green Energy Park" class="company-image">
+          
+          <video controls loop muted class="modal-video">
+            <source src="assets/internship_demo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          
+          <p>
+            During my internship at Green Energy Park, I worked on developing and optimizing AI models for anomaly detection in IoT sensor data. This project involved building a comprehensive end-to-end system to monitor and analyze real-time data from various sensors deployed across renewable energy installations.
+          </p>
+          <p>
+            <strong>Key Responsibilities:</strong>
+          </p>
+          <p>
+            • Researched and implemented autoencoder neural network architectures for unsupervised anomaly detection<br>
+            • Designed and implemented the hardware architecture for IoT sensor integration and data collection<br>
+            • Developed and optimized the complete data pipeline from hardware sensors to cloud infrastructure<br>
+            • Engineered the full-stack solution including edge processing, data transmission protocols, and cloud-based storage<br>
+            • Built a cloud-based monitoring dashboard for system administrators to visualize anomalies and system health in real-time<br>
+            • Optimized the entire pipeline for performance and reliability at both hardware and cloud levels<br>
+            • Collaborated with the engineering team to integrate the anomaly detection system into existing infrastructure
+          </p>
+          <p>
+            <strong>Technologies Used:</strong> Python, TensorFlow, Docker, Cloud Platforms, IoT Protocols, Real-time Data Processing
+          </p>
+          <p>
+            This experience strengthened my skills in machine learning, system architecture design, and working with large-scale IoT datasets in the context of sustainable energy systems.
+          </p>
+          <img src="data/GEP_company_pic.png" alt="Green Energy Park Team" class="company-photo">
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for UM6P & GEP -->
+    <div id="modal-um6p-lca" class="modal" onclick="closeModalOnOutsideClick(event, 'modal-um6p-lca')">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-title-section">
+            <div class="modal-title">Data Science & Modeling Research Intern</div>
+            <div class="modal-company">UM6P College of Computing & Green Energy Park</div>
+            <div class="modal-date">February 2025 - June 2025</div>
+          </div>
+          <button class="modal-close" onclick="closeModal('modal-um6p-lca')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="dual-logo-container">
+            <img src="assets/um6p_cc_logo.png" alt="UM6P College of Computing" class="dual-logo">
+            <img src="assets/logo_gep.png" alt="Green Energy Park" class="dual-logo">
+          </div>
+          <p>
+            Looking back at one of the most exciting parts of my first year at UM6P College of Computing, I recall our <strong>Application Project</strong> as part of the LEAP program, completed last June in collaboration with Green Energy Park.
+          </p>
+          <p>
+            Together with my teammate <strong>Fatima Zahra Fadel</strong>, we worked on <strong>QUACI-ACV (Quantification of Circularities in Life Cycle Assessment for Buildings)</strong>. Our project focused on helping civil engineers compare the environmental impact of different building designs while considering the uncertainty in material and energy data — something often overlooked in traditional LCA methods.
+          </p>
+          <p>
+            We built a complete tool that brings together statistical analysis, simulation, and visualization to make these comparisons more reliable. It uses:
+          </p>
+          <p>
+            • <strong>Monte Carlo simulations</strong> to model uncertainty in building data<br>
+            • <strong>Comparative analysis methods</strong> like discernibility analysis, ranking probabilities, and sensitivity analysis<br>
+            • An <strong>interactive web interface</strong> built with Streamlit connected to a Flask backend for the heavy computations<br>
+            • The system evaluates <strong>27 environmental indicators</strong> across multiple impact categories to provide a more robust and data-driven comparison of building alternatives
+          </p>
+          <p>
+            Thinking back, the project really pushed us to apply statistical concepts to real environmental problems and to collaborate effectively under tight academic deadlines. Working through the process from uncertainty modeling to building a functional system taught us a lot about the balance between research, coding, and teamwork.
+          </p>
+          <p>
+            <strong>Big thanks to our mentors:</strong><br>
+            • Mohamed Oualid MGHAZLI from Green Energy Park<br>
+            • Ikram Chairi from UM6P College of Computing
+          </p>
+          <p>
+            for their guidance and support throughout this journey.
+          </p>
+          <img src="data/PA_presentation.jpg" alt="Project Presentation" class="company-photo" style="margin-top: 40px;">
+          <img src="data/PA_heatmap.jpg" alt="Project Heatmap Analysis" class="company-photo">
+          <img src="data/PA_cornergraph.jpg" alt="Project Corner Graph Analysis" class="company-photo">
+        </div>
+      </div>
     </div>
   </div>
 
@@ -480,6 +742,39 @@
       toggle.classList.toggle('open');
       overlay.classList.toggle('show');
     }
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = ''; // Restore scrolling
+      }
+    }
+
+    function closeModalOnOutsideClick(event, modalId) {
+      if (event.target.id === modalId) {
+        closeModal(modalId);
+      }
+    }
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        const modals = document.querySelectorAll('.modal.show');
+        modals.forEach(modal => {
+          modal.classList.remove('show');
+          document.body.style.overflow = '';
+        });
+      }
+    });
   </script>
 </body>
 </html>
