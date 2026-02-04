@@ -396,6 +396,92 @@
       font-size: 12px;
     }
 
+    /* Loading Overlay Styles */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(6, 17, 11, 0.98);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .loading-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .loader {
+      width: 560px;
+      max-width: 90%;
+      background: rgba(0,0,0,0.7);
+      border: 2px solid #a855f7;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(168,85,247,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .loader-title {
+      font-size: 20px;
+      color: #a855f7;
+      font-weight: bold;
+      letter-spacing: 3px;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(168,85,247,0.5);
+    }
+
+    .runner {
+      position: relative;
+      width: 180px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .runner img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(168,85,247,0.4));
+    }
+
+    .bar {
+      width: 100%;
+      height: 20px;
+      background: rgba(0,0,0,0.5);
+      border: 2px solid #a855f7;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #a855f7, #9333ea);
+      width: 0%;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 15px rgba(168,85,247,0.6);
+    }
+
+    .loader-hint {
+      font-size: 14px;
+      color: rgba(168,85,247,0.8);
+      letter-spacing: 1px;
+    }
+
     /* Section Title */
     .section-title {
       font-size: 24px;
@@ -449,31 +535,31 @@
   <!-- Left Sidebar Navigation -->
   <nav class="sidebar-nav" id="sidebarNav">
     <div class="sidebar-nav-inner">
-      <a class="nav-link" href="index.html">
+      <a class="nav-link" onclick="goToPage('index.html', 'RETURNING TO HOME…')">
         <img class="pixel" src="assets/icons/home.gif" alt="">
         <span>HOME</span>
       </a>
-      <a class="nav-link" href="skills.html">
+      <a class="nav-link" onclick="goToPage('skills.html', 'LOADING SKILLS…')">
         <img class="pixel" src="assets/icons/star.gif" alt="">
         <span>SKILLS</span>
       </a>
-      <a class="nav-link" href="professional-experience.html">
+      <a class="nav-link" onclick="goToPage('professional-experience.html', 'LOADING EXPERIENCE…')">
         <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
         <span>PROF EXPERIENCE</span>
       </a>
-      <a class="nav-link" href="leadership-activities.html">
+      <a class="nav-link" onclick="goToPage('leadership-activities.html', 'LOADING ACTIVITIES…')">
         <img class="pixel" src="assets/icons/LandC.gif" alt="">
         <span>LEADERSHIP & ACTIVITIES</span>
       </a>
-      <a class="nav-link" href="projects.html">
+      <a class="nav-link" onclick="goToPage('projects.html', 'LOADING PROJECTS…')">
         <img class="pixel" src="assets/icons/projects.png" alt="">
         <span>PROJECTS</span>
       </a>
-      <a class="nav-link" href="ctf.html">
+      <a class="nav-link" onclick="goToPage('ctf.html', 'LOADING CTF…')">
         <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
         <span>CTF</span>
       </a>
-      <a class="nav-link" href="profile.html">
+      <a class="nav-link" onclick="goToPage('profile.html', 'LOADING PROFILE…')">
         <img class="pixel" src="assets/icons/profile.png" alt="">
         <span>PROFILE</span>
       </a>
@@ -481,7 +567,7 @@
   </nav>
 
   <!-- Back Button -->
-  <a href="profile.html" class="back-btn">BACK ▶</a>
+  <a onclick="goToPage('profile.html', 'LOADING PROFILE…')" class="back-btn">BACK ▶</a>
 
   <!-- Main Content -->
   <div class="container">
@@ -830,6 +916,57 @@
       overlay.classList.toggle('active');
       toggle.classList.toggle('open');
     }
+
+    // Navigation with loading transition
+    function goToPage(dest, label) {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const barFill = document.getElementById('barFill');
+      const loaderTitle = document.getElementById('loaderTitle');
+      
+      // Close sidebar
+      const sidebar = document.getElementById('sidebarNav');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const toggle = document.getElementById('navToggle');
+      sidebar.classList.remove('active');
+      sidebarOverlay.classList.remove('active');
+      toggle.classList.remove('open');
+      
+      // Set loader text
+      loaderTitle.textContent = label || 'LOADING…';
+      
+      // Show loading overlay
+      loadingOverlay.classList.add('active');
+      barFill.style.width = '0%';
+      
+      // Animate progress bar
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 100) progress = 100;
+        barFill.style.width = progress + '%';
+        
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            window.location.href = dest;
+          }, 200);
+        }
+      }, 80);
+    }
   </script>
+
+  <!-- Loading Transition Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader">
+      <div class="loader-title" id="loaderTitle">LOADING…</div>
+      <div class="runner pixel">
+        <img class="pixel" src="assets/first_moving_right.gif" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="bar">
+        <div class="bar-fill" id="barFill"></div>
+      </div>
+      <div class="loader-hint">Please wait</div>
+    </div>
+  </div>
 </body>
 </html>

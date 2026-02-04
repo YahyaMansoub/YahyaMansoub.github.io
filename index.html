@@ -1106,7 +1106,7 @@
             <button class="made-demo-trigger" onclick="toggleDemo('demo1')">▼ VIEW DEMO</button>
             <div class="demo-preview" id="demo1">
               <video controls loop muted>
-                <source src="assets/internship_demo.mp4" type="video/mp4">
+                <source src="assets/Internship_demo.mp4" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
             </div>
@@ -1293,27 +1293,27 @@
           <span>SKILLS</span>
         </a>
 
-        <a href="#" onclick="goTo('professional-experience.html', 'LOADING EXPERIENCE…'); return false;" class="orbit-btn top-right">
+        <a onclick="goTo('professional-experience.html', 'LOADING EXPERIENCE…')" class="orbit-btn top-right">
           <img class="pixel" src="assets/icons/professional_experience.gif" alt="">
           <span>PROFESSIONAL<br>EXPERIENCE</span>
         </a>
 
-        <a href="projects.html" class="orbit-btn bottom-right">
+        <a onclick="goTo('projects.html', 'LOADING PROJECTS…')" class="orbit-btn bottom-right">
           <img class="pixel" src="assets/icons/projects.png" alt="">
           <span>PROJECTS</span>
         </a>
 
-        <a href="profile.html" class="orbit-btn bottom">
+        <a onclick="goTo('profile.html', 'LOADING PROFILE…')" class="orbit-btn bottom">
           <img class="pixel" src="assets/icons/profile.png" alt="">
           <span>PROFILE</span>
         </a>
 
-        <a href="leadership-activities.html" class="orbit-btn top-left">
+        <a onclick="goTo('leadership-activities.html', 'LOADING ACTIVITIES…')" class="orbit-btn top-left">
           <img class="pixel" src="assets/icons/LandC.gif" alt="">
           <span>LEADERSHIP &<br>ACTIVITIES</span>
         </a>
 
-        <a href="ctf.html" class="orbit-btn bottom-left">
+        <a onclick="goTo('ctf.html', 'LOADING CTF…')" class="orbit-btn bottom-left">
           <img class="pixel" src="assets/icons/cyber-icon.gif" alt="">
           <span>CTF</span>
         </a>
@@ -1624,8 +1624,9 @@
       }, 70);
     }
 
-    document.getElementById("toProfileBtn").addEventListener("click", () => goTo("profile.html", "LOADING PROFILE…"));
-    document.getElementById("toProjectsBtn").addEventListener("click", () => goTo("projects.html", "LOADING PROJECTS…"));
+    // These are now handled inline via onclick attributes
+    // document.getElementById("toProfileBtn").addEventListener("click", () => goTo("profile.html", "LOADING PROFILE…"));
+    // document.getElementById("toProjectsBtn").addEventListener("click", () => goTo("projects.html", "LOADING PROJECTS…"));
   </script>
 </body>
 </html>
