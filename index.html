@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <script>
-    // Show loader immediately if returning from skills - block rendering
-    if (window.location.search.includes('from=skills')) {
+    // Show loader immediately if returning from skills or projects - block rendering
+    if (window.location.search.includes('from=skills') || window.location.search.includes('from=projects')) {
       document.write('<style id="forceLoader">#transition{opacity:1!important;pointer-events:auto!important;}</style>');
     }
     // Hide page content but show loader immediately if loading professional experience
@@ -1057,7 +1057,7 @@
 
     <!-- button -->
     <div class="enter-up btn-layer" id="btnEnter">
-      <button class="pixel-btn" id="toProfileBtn">
+      <button class="pixel-btn" id="toProfileBtn" onclick="goTo('profile.html', 'LOADING PROFILE…')">
         <img class="btn-icon pixel"
              id="profileIcon"
              data-static="assets/icons/profile.png"
@@ -1148,7 +1148,7 @@
 
         <!-- bottom nav buttons -->
         <div class="made-nav" id="madeNav">
-          <button class="pixel-btn-sm" id="toProjectsBtn">
+          <button class="pixel-btn-sm" id="toProjectsBtn" onclick="goTo('projects.html', 'LOADING PROJECTS…')">
             <img class="btn-icon-nav pixel"
                  id="projectsIcon"
                  data-static="assets/icons/projects.png"
@@ -1159,8 +1159,6 @@
             PROJECTS
           </button>
         </div>
-
-        <div class="made-footer">Next: Skills & full Projects pages.</div>
       </div>
 
       <div class="mt-6 text-center text-[10px] opacity-70">
@@ -1340,6 +1338,21 @@
   </div>
 
   <script>
+    // Handle browser back/forward button - prevent loading screen from sticking
+    window.addEventListener('pageshow', function(event) {
+      // Check if page was loaded from browser cache (back/forward navigation)
+      if (event.persisted || (performance.navigation && performance.navigation.type === 2)) {
+        const overlay = document.getElementById('transition');
+        const forceStyle = document.getElementById('forceLoader');
+        if (forceStyle) forceStyle.remove();
+        if (overlay) overlay.classList.remove('on');
+        // Clean up URL if needed
+        if (window.location.search) {
+          window.history.replaceState({}, '', 'index.html');
+        }
+      }
+    });
+
     // Check sessionStorage first to prevent page flash
     const loadProExp = sessionStorage.getItem('loadProExp');
     if (loadProExp === 'true') {
@@ -1352,11 +1365,11 @@
       }, 50);
     }
     
-    // Check if returning from skills page
+    // Check if returning from skills or projects page
     const urlParams = new URLSearchParams(window.location.search);
     const returnFrom = urlParams.get('from');
     
-    if (returnFrom === 'skills') {
+    if (returnFrom === 'skills' || returnFrom === 'projects') {
       // Remove query param immediately
       window.history.replaceState({}, '', 'index.html');
       

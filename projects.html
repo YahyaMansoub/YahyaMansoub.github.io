@@ -516,7 +516,7 @@
   <!-- Left Sidebar Navigation -->
   <nav class="sidebar-nav" id="sidebarNav">
     <div class="sidebar-nav-inner">
-      <a class="nav-link" onclick="goToPage('index.html', 'RETURNING TO HOME…')">
+      <a class="nav-link" onclick="goToPage('index.html?from=projects', 'RETURNING TO HOME…')">
         <img class="pixel" src="assets/icons/home.gif" alt="">
         <span>HOME</span>
       </a>
@@ -722,6 +722,17 @@
   </div>
 
   <script>
+    // Handle browser back/forward button - prevent loading screen from sticking
+    window.addEventListener('pageshow', function(event) {
+      // Check if page was loaded from browser cache (back/forward navigation)
+      if (event.persisted || (performance.navigation && performance.navigation.type === 2)) {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+          loadingOverlay.classList.remove('active');
+        }
+      }
+    });
+
     function toggleNav() {
       const nav = document.getElementById('sidebarNav');
       const toggle = document.getElementById('navToggle');
